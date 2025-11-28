@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fetch Bill - Pakistan Utility Portal</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>Pakistan Utility Portal</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="generate-bill.html" class="active">Fetch Bill</a>
+        <a href="load-shedding.html">Load Shedding</a>
+        <a href="#">Bill Payment</a>
+        <a href="#">Help</a>
+    </nav>
+</header>
+
+<section class="container">
+
+    <div class="card">
+        <h2>Fetch Your Bill</h2>
+        <form id="fetchBillForm">
+            <label for="utilityType">Utility:</label>
+            <select id="utilityType" required>
+                <option value="">Select Utility</option>
+                <option value="electricity">Electricity</option>
+                <option value="water">Water</option>
+                <option value="gas">Gas</option>
+            </select>
+
+            <label for="province">Province:</label>
+            <select id="province" required></select>
+
+            <label for="provider">Provider:</label>
+            <select id="provider" required></select>
+
+            <label for="consumerNumber">Consumer Number:</label>
+            <input type="text" id="consumerNumber" placeholder="Enter Consumer Number" required>
+
+            <button type="submit">Fetch Bill</button>
+        </form>
+    </div>
+
+    <div id="billResult"></div>
+
+</section>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
