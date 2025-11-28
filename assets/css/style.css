@@ -141,12 +141,54 @@ button:hover, .button:hover {
     font-size: 1em;
 }
 
-/* -----------------------------------
-   LOAD SHEDDING CARD
------------------------------------ */
-
 .bill-card p strong {
     color: #005f73;
+}
+
+/* -----------------------------------
+   HOMEPAGE UTILITY CARDS
+----------------------------------- */
+.cards-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.card-home {
+    background: linear-gradient(135deg, #6dd5ed, #2193b0);
+    color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    width: 250px;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+
+.card-home:hover {
+    transform: translateY(-5px);
+}
+
+.card-home .button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #fff;
+    color: #2193b0;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.card-home .button:hover {
+    background: #f2f2f2;
+}
+
+/* AUTOCOMPLETE INPUT */
+input[list] {
+    position: relative;
 }
 
 /* -----------------------------------
