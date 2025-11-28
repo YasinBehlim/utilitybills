@@ -38,7 +38,20 @@
             <select id="lsProvider" required></select>
 
             <label for="lsArea">Area / City:</label>
-            <input type="text" id="lsArea" placeholder="Enter your area" required>
+            <input list="areas" id="lsArea" placeholder="Enter your area" required>
+            <datalist id="areas">
+                <option value="Karachi South">
+                <option value="Karachi East">
+                <option value="Karachi West">
+                <option value="Lahore">
+                <option value="Islamabad">
+                <option value="Faisalabad">
+                <option value="Hyderabad">
+                <option value="Sukkur">
+                <option value="Peshawar">
+                <option value="Quetta">
+                <!-- Add more areas as needed -->
+            </datalist>
 
             <button type="button" id="checkLS">Check Load Shedding</button>
         </form>
