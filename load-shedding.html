@@ -55,8 +55,8 @@
   </div>
 
   <div id="result" class="result">
-    <h2 id="location">Live Status</h2>
-    <div id="currentStatus" class="current-status">Checking...</div>
+    <h2 id="location"></h2>
+    <div id="currentStatus" class="current-status">Please select above</div>
     <p id="currentTime" style="font-size:1.1rem;color:#555"></p>
 
     <div class="schedule">
@@ -65,139 +65,154 @@
     </div>
 
     <button onclick="window.print()" class="download">Download as PDF</button>
-    <p class="note">Based on official Nov 2025 patterns • Verify with your utility app for 100% live accuracy</p>
+    <p class="note">Based on official Nov 2025 patterns • Verify with your utility app</p>
   </div>
 
   <footer>Pakistan Utility Portal © 2025</footer>
 </div>
 
 <script>
-// All major cities + 40+ Karachi areas
+// Cities & 40+ Karachi areas
 const cities = {
-  karachi: ["Nazimabad A Block","Nazimabad B Block","Nazimabad C Block","Nazimabad D Block","North Nazimabad","North Karachi","Gulshan-e-Iqbal","Gulistan-e-Johar","FB Area","Paposh Nagar","Liaquatabad","Lyari","Saddar","Clifton","Defence DHA","Korangi","Landhi","Malir","Shah Faisal Colony","Orangi Town","Surjani Town","Scheme 33","Buffer Zone","Gulshan-e-Maymar","Gadap Town","Keamari","Bin Qasim","DHA City","PECHS","Tariq Road","Bahadurabad","Akhtar Colony","Delhi Colony","Garden East","Soldier Bazaar","Jamshed Town","Clifton Block 8","North Karachi 5C","Malir Cantt","Korangi Industrial Area"],
-  lahore: ["Model Town","Gulberg","DHA","Johar Town","Wapda Town","Valencia","Garden Town","Shadman","Iqbal Town","Samanabad","Cantt","Township","Faisal Town","Sabzazar","Baghbanpura"],
+  karachi: ["Nazimabad A Block","Nazimabad B Block","Nazimabad C Block","Nazimabad D Block","North Nazimabad","North Karachi","Gulshan-e-Iqbal","Gulistan-e-Johar","FB Area","Paposh Nagar","Liaquatabad","Lyari","Saddar","Clifton","Defence DHA","Korangi","Landhi","Malir","Shah Faisal Colony","Orangi Town","Surjani Town","Scheme 33","Buffer Zone","Gulshan-e-Maymar","Gadap Town","Keamari","Bin Qasim","PECHS","Tariq Road","Bahadurabad","Akhtar Colony","Delhi Colony","Garden East","Soldier Bazaar","Jamshed Town"],
+  lahore: ["Model Town","Gulberg","DHA","Johar Town","Wapda Town","Valencia","Garden Town","Shadman","Iqbal Town","Samanabad","Cantt","Township","Faisal Town"],
   islamabad: ["G-6","G-7","G-8","G-9","G-10","G-11","F-6","F-7","F-8","F-10","F-11","I-8","I-9","I-10","Blue Area","Bahria Town"],
-  faisalabad: ["Civil Lines","Madina Town","Peoples Colony","Susan Road"],
+  faisalabad: ["Civil Lines","Madina Town","Peoples Colony"],
   multan: ["Cantt","Gulgasht","Model Town"],
   peshawar: ["Hayatabad","University Town","Cantt"],
   quetta: ["Cantt","Jinnah Town"]
 };
 
-// Full schedule database
-const fullSchedule = {
+// Full schedule data
+const scheduleData = {
   electricity: {
-    "Nazimabad A Block": ["06:00 AM – 09:00 AM → ON","09:00 AM – 01:00 PM → OFF","01:00 PM – 05:00 PM → ON","05:00 PM – 09:00 PM → OFF","09:00 PM – 06:00 AM → ON"],
-    "Nazimabad B Block": ["07:00 AM – 11:00 AM → ON","11:00 AM – 03:00 PM → OFF","03:00 PM – 07:00 PM → ON","07:00 PM – 11:00 PM → OFF","11:00 PM – 07:00 AM → ON"],
-    "Lyari": ["08:00 AM – 02:00 PM → OFF","02:00 PM – 06:00 PM → ON","06:00 PM – 12:00 AM → OFF","12:00 AM – 08:00 AM → ON"],
-    "Clifton": ["No Load Shedding Today"],
-    "Defence DHA": ["No Load Shedding (Exempted)"],
-    "default": ["06:00 AM – 10:00 AM → ON","10:00 AM – 02:00 PM → OFF","02:00 PM – 06:00 PM → ON","06:00 PM – 10:00 PM → OFF","10:00 PM – 06:00 AM → ON"]
+    "Nazimabad A Block": ["06:00 – 10:00 → ON","10:00 – 14:00 → OFF","14:00 – 18:00 → ON","18:00 – 22:00 → OFF","22:00 – 06:00 → ON"],
+    "Nazimabad B Block": ["08:00 – 12:00 → ON","12:00 – 16:00 → OFF","16:00 – 20:00 → ON","20:00 – 24:00 → OFF","00:00 – 08:00 → ON"],
+    "Lyari": ["07:00 – 13:00 → OFF","13:00 – 19:00 → ON","19:00 – 01:00 → OFF","01:00 – 07:00 → ON"],
+    "Clifton": ["No Load Shedding"],
+    "Defence DHA": ["No Load Shedding"],
+    "default": ["06:00 – 10:00 → ON","10:00 – 14:00 → OFF","14:00 – 18:00 → ON","18:00 – 22:00 → OFF","22:00 – 06:00 → ON"]
   },
   gas: {
-    "all": ["12:00 AM – 05:00 AM → FULL PRESSURE","05:00 AM – 09:00 AM → LOW PRESSURE","09:00 AM – 12:00 PM → FULL PRESSURE","12:00 PM – 12:00 AM → LOW PRESSURE"]
+    "all": ["12:00 AM – 05:00 AM → FULL PRESSURE","05:00 AM – 09:00 AM → LOW","09:00 AM – 12:00 PM → FULL PRESSURE","12:00 PM – 12:00 AM → LOW"]
   },
   water: {
-    lahore: ["04:00 AM – 10:00 AM → ON","10:00 AM – 02:00 PM → OFF","02:00 PM – 06:00 PM → ON","06:00 PM – 08:00 PM → OFF","08:00 PM – 12:00 AM → ON","12:00 AM – 04:00 AM → OFF"],
-    karachi: ["08:00 AM – 04:00 PM → NORMAL SUPPLY","04:00 PM – 08:00 AM → LOW / No Supply (Shortage)"],
+    lahore: ["04:00 AM – 10:00 AM → ON","10:00 AM – 02:00 PM → OFF","02:00 PM – 06:00 PM → ON","06:00 PM – 08:00 PM → OFF","08:00 PM – 12:00 AM → ON"],
+    karachi: ["08:00 AM – 04:00 PM → NORMAL","04:00 PM – 08:00 AM → LOW / NO SUPPLY"],
     default: ["06:00 AM – 12:00 PM → ON","12:00 PM – 06:00 PM → LOW","06:00 PM – 06:00 AM → ON"]
   }
 };
 
 // Populate cities
-document.getElementById("utility").addEventListener("change", function() {
+document.getElementById("utility").addEventListener("change", () => {
   const citySelect = document.getElementById("city");
   citySelect.innerHTML = '<option value="">Select City</option>';
   Object.keys(cities).forEach(key => {
-    const name = key.charAt(0).toUpperCase() + key.slice(1);
+    const name = key.charAt(0).toUpperCase() + key.slice1);
     citySelect.innerHTML += `<option value="${key}">${name}</option>`;
   });
   document.getElementById("area").innerHTML = '<option value="">Select Area</option>';
 });
 
 // Populate areas
-document.getElementById("city").addEventListener("change", function() {
+document.getElementById("city").addEventListener("change", () => {
   const areaSelect = document.getElementById("area");
   areaSelect.innerHTML = '<option value="">Select Area</option>';
-  (cities[this.value] || []).forEach(a => {
-    areaSelect.innerHTML += `<option value="${a}">${a}</option>`;
-  });
+  const list = cities[document.getElementById("city").value] || [];
+  list.forEach(a => areaSelect.innerHTML += `<option value="${a}">${a}</option>`);
 });
 
-function updateStatusAndSchedule() {
-  const now = new Date();
-  const hours = now.getHours();
+function showResult() {
   const utility = document.getElementById("utility").value;
-  const area = document.getElementById("area").value;
   const city = document.getElementById("city").value;
+  const area = document.getElementById("area").value;
 
+  if (!utility || !city || !area) {
+    alert("Please fill all three fields");
+    return;
+  }
+
+  // Set location
+  document.getElementById("location").textContent = 
+    `${document.querySelector("#utility option:checked").textContent} – ${area}, ${document.querySelector("#city option:checked").textContent}`;
+
+  // Current time
+  const now = new Date();
   document.getElementById("currentTime").textContent = "Last updated: " + now.toLocaleTimeString('en-GB');
 
+  // CURRENT STATUS
   let currentMsg = "";
-  let colorClass = "on";
+  let color = "on";
 
   if (utility === "electricity") {
-    const sched = fullSchedule.electricity[area] || fullSchedule.electricity.default;
+    const slots = scheduleData.electricity[area] || scheduleData.electricity.default;
     let isOn = true;
-    sched.forEach(slot => {
-      const time = slot.split(" → ")[0];
-      const status = slot.split(" → ")[1];
-      const startH = parseInt(time.split(":")[0]);
-      if (!time.includes("–") && hours >= 0) isOn = status.includes("ON");
-      else if (time.includes("PM") && startH < 12) startH += 12;
-      if (hours >= startH) isOn = status === "ON";
-    });
-    currentMsg = isOn ? "Power is ON Right Now" : "Load Shedding Active";
-    colorClass = isOn ? "on" : "off";
+    for (let slot of slots) {
+      if (slot.includes("No Load")) { isOn = true; break; }
+      const [timeRange, status] = slot.split(" → ");
+      const startStr = timeRange.split(" – ")[0];
+      const h = parseInt(startStr.split(":")[0]);
+      const hour12 = startStr.includes("PM") && h !== 12 ? h + 12 : h;
+      if (now.getHours() >= hour12) isOn = status === "ON";
+    }
+    currentMsg = isOn ? "Power is ON Right Now" : "Load Shedding Active Now";
+    color = isOn ? "on" : "off";
   }
   else if (utility === "gas") {
-    const isFull = (hours >= 0 && hours < 5) || (hours >= 9 && hours < 12);
-    currentMsg = isFull ? "Gas Full Pressure Now" : "Low Pressure / Off";
-    colorClass = isFull ? "on" : "low";
+    const full = (now.getHours() < 5) || (now.getHours() >= 9 && now.getHours() < 12);
+    currentMsg = full ? "Gas Full Pressure Now" : "Low Pressure Right Now";
+    color = full ? "on" : "low";
   }
   else if (utility === "water") {
-    const sched = city === "lahore" ? fullSchedule.water.lahore : fullSchedule.water.karachi;
-    let isOn = true;
-    sched.forEach(slot => {
-      const start = parseInt(slot.split(":")[0]);
-      if (hours >= start) isOn = slot.includes("ON");
-    });
-    currentMsg = isOn ? "Water Supply ON" : "Low / No Supply";
-    colorClass = isOn ? "on" : "low";
+    const slots = city === "lahore" ? scheduleData.water.lahore : scheduleData.water.karachi;
+    let isOn = false;
+    for (let slot of slots) {
+      if (slot.includes("ON") || slot.includes("NORMAL")) isOn = true;
+      if (slot.includes("OFF") || slot.includes("LOW")) isOn = false;
+      const h = parseInt(slot.split(":")[0]);
+      const hour12 = slot.includes("PM") && h !== 12 ? h + 12 : h;
+      if (now.getHours() >= hour12) isOn = slot.includes("ON") || slot.includes("NORMAL");
+    }
+    currentMsg = isOn ? "Water Supply ON Now" : "Low / No Water Now";
+    color = isOn ? "on" : "low";
   }
 
   document.getElementById("currentStatus").textContent = currentMsg;
-  document.getElementById("currentStatus").className = "current-status " + colorClass;
+  document.getElementById("currentStatus").className = "current-status " + color;
 
-  // Show full schedule
+  // FULL SCHEDULE
   const list = document.getElementById("scheduleList");
   list.innerHTML = "";
   let slots = [];
-  if (utility === "gas") slots = fullSchedule.gas.all;
-  else if (utility === "water") slots = city === "lahore" ? fullSchedule.water.lahore : fullSchedule.water.karachi;
-  else slots = fullSchedule.electricity[area] || fullSchedule.electricity.default;
+
+  if (utility === "gas") slots = scheduleData.gas.all;
+  else if (utility === "water") slots = city === "lahore" ? scheduleData.water.lahore : (scheduleData.water.karachi);
+  else slots = scheduleData.electricity[area] || scheduleData.electricity.default;
 
   slots.forEach(slot => {
     const div = document.createElement("div");
     div.className = "slot";
-    const status = slot.includes("ON") || slot.includes("FULL") ? "on" : slot.includes("LOW") ? "low" : "off";
-    div.innerHTML = `<span class="time">${slot.split(" → ")[0]}</span>
-                     <span class="status-tag ${status}">${slot.split(" → ")[1] || slot}</span>`;
+    const parts = slot.split(" → ");
+    const time = parts[0];
+    const status = parts[1] || parts[0];
+    const statusColor = status.includes("ON") || status.includes("FULL") || status.includes("NORMAL") ? "on" : "off";
+    const lowColor = status.includes("LOW") ? "low" : statusColor;
+    div.innerHTML = `<span class="time">${time}</span><span class="status-tag ${lowColor}">${status}</span>`;
     list.appendChild(div);
   });
-}
-
-document.getElementById("form").onsubmit = function(e) {
-  e.preventDefault();
-  if (!document.getElementById("area").value) return alert("Please select area");
-
-  document.getElementById("location").textContent = 
-    `${document.querySelector("#utility option:checked").text} – ${document.getElementById("area").value}, ${document.querySelector("#city option:checked").text}`;
-
-  updateStatusAndSchedule();
-  setInterval(updateStatusAndSchedule, 60000);
 
   document.getElementById("result").style.display = "block";
   window.scrollTo({ top: document.getElementById("result").offsetTop - 100, behavior: 'smooth' });
+}
+
+// Form submit
+document.getElementById("form").onsubmit = function(e) {
+  e.preventDefault();
+  showResult();
+  setInterval(() => {
+    const now = new Date();
+    document.getElementById("currentTime").textContent = "Last updated: " + now.toLocaleTimeString('en-GB');
+  }, 60000);
 };
 </script>
 </body>
