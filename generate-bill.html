@@ -1,70 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Fetch Bill - Pakistan Utility Portal</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fetch Bill - Pakistan Utility Portal</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7fa; color: #2c3e50; margin: 0; padding: 20px; line-height: 1.6; }
+    .container { max-width: 700px; margin: 40px auto; text-align: center; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
+    h1 { font-size: 2.2rem; color: #2c3e50; margin-bottom: 10px; }
+    p { color: #555; margin-bottom: 30px; }
+    .form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    .form-group { margin-bottom: 18px; text-align: left; }
+    label { display: block; margin-bottom: 6px; font-weight: bold; color: #2c3e50; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+    button { background: #3498db; color: white; padding: 14px 30px; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+    button:hover { background: #2980b9; }
+    .result { margin-top: 40px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: none; }
+    .status { font-size: 1.3rem; font-weight: bold; padding: 10px; border-radius: 8px; }
+    .paid { background: #d4edda; color: #155724; }
+    .unpaid { background: #f8d7da; color: #721c24; }
+    .download-btn { background: #27ae60; margin-top: 20px; padding: 12px 25px; }
+    .download-btn:hover { background: #219653; }
+    footer { margin-top: 60px; color: #777; font-size: 0.9rem; }
+  </style>
 </head>
 <body>
 
-<header>
-    <h1>Pakistan Utility Portal</h1>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="generate-bill.html" class="active">Fetch Bill</a>
-        <a href="load-shedding.html">Load Shedding</a>
-        <a href="#">Bill Payment</a>
-        <a href="#">Help</a>
-    </nav>
-</header>
+  <div class="container">
+    <a href="index.html" class="back-link">Back to Home</a>
+    <h1>Fetch Your Bill</h1>
+    <p>Select utility and enter details to view & download your bill</p>
 
-<section class="container">
+    <div class="form-card">
+      <form id="fetchBillForm">
+        <div class="form-group">
+          <label for="utilityType">Utility Type</label>
+          <select id="utilityType" required>
+            <option value="">Select Utility</option>
+            <option value="electricity">Electricity</option>
+            <option value="gas">Gas</option>
+            <option value="water">Water</option>
+          </select>
+        </div>
 
-    <div class="card">
-        <h2>Fetch Your Bill</h2>
-        <form id="fetchBillForm">
-            <label for="utilityType">Utility:</label>
-            <select id="utilityType" required>
-                <option value="">Select Utility</option>
-                <option value="electricity">Electricity</option>
-                <option value="water">Water</option>
-                <option value="gas">Gas</option>
-            </select>
+        <div class="form-group">
+          <label for="consumerNumber">Consumer / Reference Number</label>
+          <input type="text" id="consumerNumber" placeholder="Enter your number" required />
+        </div>
 
-            <label for="province">Province:</label>
-            <select id="province" required></select>
+        <div class="form-group">
+          <label for="billMonth">Bill Month</label>
+          <select id="billMonth" required>
+            <option value="">Select Month</option>
+            <option value="2025-11">November 2025</option>
+            <option value="2025-10">October 2025</option>
+            <option value="2025-09">September 2025</option>
+          </select>
+        </div>
 
-            <label for="provider">Provider:</label>
-            <select id="provider" required></select>
-
-            <label for="consumerNumber">Consumer Number:</label>
-            <input type="text" id="consumerNumber" placeholder="Enter Consumer Number" required>
-
-            <label for="billMonth">Select Month:</label>
-            <select id="billMonth" required>
-                <option value="">Select Month</option>
-                <option value="2025-01">January 2025</option>
-                <option value="2025-02">February 2025</option>
-                <option value="2025-03">March 2025</option>
-                <option value="2025-04">April 2025</option>
-                <option value="2025-05">May 2025</option>
-                <option value="2025-06">June 2025</option>
-                <option value="2025-07">July 2025</option>
-                <option value="2025-08">August 2025</option>
-                <option value="2025-09">September 2025</option>
-                <option value="2025-10">October 2025</option>
-                <option value="2025-11">November 2025</option>
-                <option value="2025-12">December 2025</option>
-            </select>
-
-            <button type="submit">Fetch Bill</button>
-        </form>
+        <button type="submit">Fetch Bill</button>
+      </form>
     </div>
 
-    <div id="billResult"></div>
+    <!-- Result will appear here -->
+    <div id="billResult" class="result">
+      <h2>Bill Details</h2>
+      <p><strong>Consumer:</strong> <span id="resultConsumer"></span></p>
+      <p><strong>Amount:</strong> Rs. <span id="resultAmount"></span></p>
+      <p><strong>Due Date:</strong> <span id="resultDue"></span></p>
+      <div id="resultStatus" class="status"></div>
+      <button onclick="downloadPDF()" class="download-btn">Download PDF</button>
+    </div>
 
-</section>
+    <footer>Pakistan Utility Portal © 2025 • Simple & Fast</footer>
+  </div>
 
-<script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById("fetchBillForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Simulate bill fetch (replace with real API later if you want)
+      const consumer = document.getElementById("consumerNumber").value;
+      const month = document.getElementById("billMonth").options[document.getElementById("billMonth").selectedIndex].text;
+
+      // Random demo data
+      const amount = Math.floor(Math.random() * 8000) + 1500;
+      const isPaid = Math.random() > 0.5;
+      const dueDate = "15 Dec 2025";
+
+      document.getElementById("resultConsumer").textContent = consumer;
+      document.getElementById("resultAmount").textContent = amount.toLocaleString();
+      document.getElementById("resultDue").textContent = dueDate;
+
+      const statusEl = document.getElementById("resultStatus");
+      if (isPaid) {
+        statusEl.textContent = "PAID";
+        statusEl.className = "status paid";
+      } else {
+        statusEl.textContent = "UNPAID";
+        statusEl.className = "status unpaid";
+      }
+
+      document.getElementById("billResult").style.display = "block";
+    });
+
+    function downloadPDF() {
+      alert("PDF Download Started! (In real version, this will generate actual PDF)");
+      // Real PDF generation can be added later using jsPDF library (1 line)
+      window.print(); // Simple fallback: prints the bill section
+    }
+  </script>
+
 </body>
 </html>
