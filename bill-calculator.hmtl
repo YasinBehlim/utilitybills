@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Utility Bill Calculator Pakistan 2025</title>
+  <title>Utility Bill Calculator – Pakistan 2025</title>
   <style>
     body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);color:#333;margin:0;padding:20px;min-height:100vh}
     .container{max-width:800px;margin:30px auto;background:#fff;border-radius:20px;box-shadow:0 15px 40px rgba(0,0,0,0.2);overflow:hidden}
@@ -19,71 +19,48 @@
     table{width:100%;border-collapse:collapse;margin:20px 0}
     th,td{padding:14px;text-align:left;border-bottom:1px solid #ddd}
     th{background:#667eea;color:#fff}
-    .total{font-size:1.5rem;font-weight:bold;color:#e74c3c;padding:20px;background:#fff3cd;border-radius:12px;text-align:center;margin:20px 0}
+    .total{font-size:1.8rem;font-weight:bold;color:#e74c3c;padding:20px;background:#fff3cd;border-radius:12px;text-align:center;margin:20px 0}
     .note{font-size:0.95rem;color:#e74c3c;margin-top:20px;text-align:center}
     footer{padding:20px;background:#2c3e50;color:#fff;text-align:center;font-size:0.9rem}
-    .tou-input{display:none}
+    .hidden{display:none}
   </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
     <h1>Utility Bill Calculator</h1>
-    <p class="subtitle">Electricity + Gas + Water • Pakistan 2025 (NEPRA/OGRA/PWRA Tariffs)</p>
+    <p class="subtitle">Electricity + Gas + Water • All Pakistan • 2025 Latest Tariffs</p>
   </div>
 
   <div class="card">
     <form id="billForm">
-      <select id="utility" required>
+      <select id="utility" required onchange="updateCompanies()">
         <option value="">Select Utility</option>
         <option value="electricity">Electricity</option>
-        <option value="gas">Gas</option>
+        <option value="gas">Gas (Sui)</option>
         <option value="water">Water</option>
       </select>
 
-      <select id="company" required>
-        <option value="">Select Company</option>
-        <!-- Electricity Companies -->
-        <option data-utility="electricity" value="ke">K-Electric (Karachi)</option>
-        <option data-utility="electricity" value="lesco">LESCO (Lahore)</option>
-        <option data-utility="electricity" value="iesco">IESCO (Islamabad)</option>
-        <option data-utility="electricity" value="fesco">FESCO (Faisalabad)</option>
-        <option data-utility="electricity" value="mepco">MEPCO (Multan)</option>
-        <option data-utility="electricity" value="gepco">GEPCO (Gujranwala)</option>
-        <option data-utility="electricity" value="pesco">PESCO (Peshawar)</option>
-        <option data-utility="electricity" value="hesco">HESCO (Hyderabad)</option>
-        <option data-utility="electricity" value="qesco">QESCO (Quetta)</option>
-        <option data-utility="electricity" value="tesco">TESCO (Tribal)</option>
-        <option data-utility="electricity" value="sepco">SEPCO (Sukkur)</option>
-        <!-- Gas Companies -->
-        <option data-utility="gas" value="sngpl">SNGPL (Punjab/KPK)</option>
-        <option data-utility="gas" value="ssgc">SSGC (Sindh/Balochistan)</option>
-        <!-- Water Companies -->
-        <option data-utility="water" value="wasa_lahore">WASA Lahore</option>
-        <option data-utility="water" value="wasa_faisalabad">WASA Faisalabad</option>
-        <option data-utility="water" value="kwsb">KWSB Karachi</option>
-        <option data-utility="water" value="qwasa">QWASA Quetta</option>
+      <select id="company" required onchange="updateTariffOptions()">
+        <option value="">Select Company First</option>
       </select>
 
       <select id="connection" required>
         <option value="">Connection Type</option>
-        <option value="domestic">Domestic (Residential)</option>
+        <option value="domestic">Domestic / Residential</option>
         <option value="commercial">Commercial</option>
       </select>
 
       <select id="tariff" required>
         <option value="">Tariff Type</option>
-        <option value="normal">Normal</option>
-        <option value="protected">Protected (Low Usage)</option>
-        <option value="tou">Time of Use (ToU)</option>
       </select>
 
       <div id="normalUnits">
-        <input type="number" id="units" placeholder="Enter Units Consumed (MCF for Gas, KL for Water)" min="1">
+        <input type="number" id="units" placeholder="Enter Units Consumed (kWh / MCF / KL)" min="1" required>
       </div>
 
-      <div id="touInput" class="tou-input">
-        <input type="number" id="peak" placeholder="Peak Units" min="0">
+      <div id="touUnits" class="hidden">
+        <input type="number" id="peak" placeholder="Peak Units (6pm–10pm)" min="0">
         <input type="number" id="offpeak" placeholder="Off-Peak Units" min="0">
       </div>
 
@@ -92,164 +69,137 @@
   </div>
 
   <div id="result" class="result">
-    <h2>Bill Breakdown</h2>
+    <h2>Your Bill Breakdown</h2>
     <table>
-      <thead>
-        <tr><th>Description</th><th>Rate (Rs.)</th><th>Units</th><th>Amount (Rs.)</th></tr>
-      </thead>
+      <tr><th>Description</th><th>Amount (Rs.)</th></tr>
       <tbody id="breakdown"></tbody>
     </table>
     <div class="total" id="finalAmount"></div>
     <button onclick="window.print()" style="background:#27ae60;margin-top:20px">Print / Save as PDF</button>
-    <p class="note">Estimated bill based on Nov–Dec 2025 tariffs. Actual may vary due to meter reading, arrears, or adjustments.</p>
+    <p class="note">Estimated bill • Actual bill may vary slightly due to adjustments</p>
   </div>
 
-  <footer>Pakistan Utility Portal © 2025 – Accurate per NEPRA/OGRA/PWRA</footer>
+  <footer>Pakistan Utility Portal © 2025</footer>
 </div>
 
 <script>
-// 2025 Tariffs (Nov-Dec) - Electricity (NEPRA Uniform)
-const electricityTariff = {
-  ke: {  // K-Electric
-    protected: [[0,50,6.05],[50,100,11.10],[100,200,14.16],[200,Infinity,41.97]],
-    normal: [[0,100,23.17],[100,200,28.07],[200,300,33.14],[300,Infinity,41.97]],
-    tou_peak: 44.57, tou_offpeak: 34.57
+// Fixed & Working 2025 Tariffs
+const tariffs = {
+  electricity: {
+    companies: ["K-Electric","LESCO","IESCO","FESCO","MEPCO","GEPCO","PESCO","HESCO","QESCO","SEPCO","TESCO"],
+    domestic_normal: [[0,100,23.17],[100,200,28.07],[200,300,33.14],[300,Infinity,41.97]],
+    domestic_protected: [[0,50,6.05],[50,100,11.10],[100,200,14.16],[200,Infinity,41.97]],
+    tou_peak: 44.57, tou_offpeak: 34.57,
+    commercial: 43.07
   },
-  lesco: {  // LESCO
-    protected: [[0,50,6.05],[50,100,11.10],[100,200,14.16],[200,Infinity,41.97]],
-    normal: [[0,100,23.17],[100,200,28.07],[200,300,33.14],[300,Infinity,41.97]],
-    tou_peak: 44.57, tou_offpeak: 34.57
+  gas: {
+    companies: ["SNGPL (Punjab/KPK)","SSGC (Sindh/Balochistan)"],
+    domestic: 5457,  // per MCF (approx average 2025)
+    commercial: 8500
   },
-  iesco: {  // IESCO
-    protected: [[0,50,6.05],[50,100,11.10],[100,200,14.16],[200,Infinity,41.97]],
-    normal: [[0,100,23.17],[100,200,28.07],[200,300,33.14],[300,Infinity,41.97]],
-    tou_peak: 44.57, tou_offpeak: 34.57
-  },
-  // Similar for other DISCOs (fesco, mepco, gepco, pesco, hesco, qesco, sepco, tesco) - same uniform tariff
-  fesco: electricityTariff.lesco, mepco: electricityTariff.lesco, gepco: electricityTariff.lesco, pesco: electricityTariff.lesco, hesco: electricityTariff.lesco, qesco: electricityTariff.lesco, sepco: electricityTariff.lesco, tesco: electricityTariff.lesco
-};
-
-// Gas Tariffs 2025 (OGRA - SNGPL/SSGC)
-const gasTariff = {
-  sngpl: {
-    protected: [[0,50,5457],[50,100,5457],[100,200,5457],[200,300,5457],[300,Infinity,5457]],
-    normal: [[0,50,5457],[50,100,5457],[100,200,5457],[200,300,5457],[300,Infinity,5457]]
-  },
-  ssgc: gasTariff.sngpl  // Similar rates
-};
-
-// Water Tariffs 2025 (PWRA - WASA/KWSB)
-const waterTariff = {
-  wasa_lahore: {
-    domestic: 10.5,  // Rs per KL
-    commercial: 25.0
-  },
-  wasa_faisalabad: { domestic: 12.0, commercial: 28.0 },
-  kwsb: { domestic: 15.0, commercial: 35.0 },  // Karachi volumetric + fixed Rs 100
-  qwasa: { domestic: 11.0, commercial: 26.0 }
-};
-
-// Common Taxes (17% GST, 1.5% ED, etc.)
-const taxes = { gst: 0.17, ed: 0.015, fc: 0.43, tv: 35 };
-
-// Show/hide ToU inputs
-document.getElementById("tariff").addEventListener("change", () => {
-  const tariff = document.getElementById("tariff").value;
-  document.getElementById("normalUnits").style.display = tariff === "tou" ? "none" : "block";
-  document.getElementById("touInput").style.display = tariff === "tou" ? "block" : "none";
-});
-
-// Filter companies by utility
-document.getElementById("utility").addEventListener("change", () => {
-  const utility = document.getElementById("utility").value;
-  const options = document.getElementById("company").options;
-  for (let i = 1; i < options.length; i++) {
-    options[i].style.display = options[i].dataset.utility === utility ? "block" : "none";
+  water: {
+    companies: ["WASA Lahore","WASA Faisalabad","KWSB Karachi","QWASA Quetta"],
+    domestic: 12,   // average Rs/KL
+    commercial: 30
   }
-  document.getElementById("company").value = "";
+};
+
+function updateCompanies() {
+  const utility = document.getElementById("utility").value;
+  const companySelect = document.getElementById("company");
+  companySelect.innerHTML = "<option value=''>Select Company</option>";
+  
+  if (!utility) return;
+  
+  const list = utility === "electricity" ? tariffs.electricity.companies :
+               utility === "gas" ? tariffs.gas.companies : tariffs.water.companies;
+  
+  list.forEach(c => {
+    companySelect.innerHTML += `<option value="${c}">${c}</option>`;
+  });
+  
+  updateTariffOptions();
+}
+
+function updateTariffOptions() {
+  const utility = document.getElementById("utility").value;
+  const tariffSelect = document.getElementById("tariff");
+  tariffSelect.innerHTML = "<option value=''>Select Tariff</option>";
+  
+  if (utility === "electricity") {
+    tariffSelect.innerHTML += `<option value="normal">Normal</option>
+                               <option value="protected">Protected (≤200 units)</option>
+                               <option value="tou">Time of Use (ToU Meter)</option>`;
+  } else {
+    tariffSelect.innerHTML += `<option value="normal">Standard</option>`;
+  }
+  
+  document.getElementById("touUnits").classList.add("hidden");
+  document.getElementById("normalUnits").style.display = "block";
+}
+
+document.getElementById("tariff").addEventListener("change", () => {
+  const isToU = document.getElementById("tariff").value === "tou";
+  document.getElementById("touUnits").classList.toggle("hidden", !isToU);
+  document.getElementById("normalUnits").style.display = isToU ? "none" : "block";
 });
 
-// Calculate Bill
 document.getElementById("billForm").onsubmit = function(e) {
   e.preventDefault();
-
   const utility = document.getElementById("utility").value;
-  const company = document.getElementById("company").value;
   const connection = document.getElementById("connection").value;
   const tariff = document.getElementById("tariff").value;
+  
   let units = 0, peak = 0, offpeak = 0;
-
   if (tariff === "tou") {
-    peak = parseFloat(document.getElementById("peak").value) || 0;
-    offpeak = parseFloat(document.getElementById("offpeak").value) || 0;
+    peak = +document.getElementById("peak").value || 0;
+    offpeak = +document.getElementById("offpeak").value || 0;
     units = peak + offpeak;
   } else {
-    units = parseFloat(document.getElementById("units").value) || 0;
+    units = +document.getElementById("units").value || 0;
   }
-
-  if (units <= 0) return alert("Enter valid units");
-
-  let energyCharges = 0, fixed = 0;
-
+  
+  if (units <= 0) return alert("Please enter units");
+  
+  let energy = 0;
   if (utility === "electricity") {
-    const rates = electricityTariff[company];
     if (tariff === "tou") {
-      energyCharges = (peak * rates.tou_peak) + (offpeak * rates.tou_offpeak);
+      energy = peak * tariffs.electricity.tou_peak + offpeak * tariffs.electricity.tou_offpeak;
+    } else if (connection === "commercial") {
+      energy = units * tariffs.electricity.commercial;
     } else {
-      const slab = tariff === "protected" ? rates.protected : rates.normal;
-      let remaining = units;
-      slab.forEach(s => {
-        if (remaining <= 0) return;
-        const slabSize = s[1] - (s[0] || 0);
-        const used = Math.min(remaining, slabSize);
-        energyCharges += used * s[2];
-        remaining -= used;
-      });
-      if (remaining > 0) energyCharges += remaining * slab[slab.length - 1][2];
+      const slab = tariff === "protected" ? tariffs.electricity.domestic_protected : tariffs.electricity.domestic_normal;
+      let rem = units;
+      for (let s of slab) {
+        if (rem <= 0) break;
+        const take = Math.min(rem, s[1] - s[0]);
+        energy += take * s[2];
+        rem -= take;
+      }
     }
-    fixed = 0;  // Domestic fixed ~0
   } else if (utility === "gas") {
-    const rates = gasTariff[company];
-    const slab = connection === "domestic" ? rates.protected : rates.normal;
-    let remaining = units;
-    slab.forEach(s => {
-      if (remaining <= 0) return;
-      const slabSize = s[1] - (s[0] || 0);
-      const used = Math.min(remaining, slabSize);
-      energyCharges += used * s[2];
-      remaining -= used;
-    });
-    if (remaining > 0) energyCharges += remaining * slab[slab.length - 1][2];
-    fixed = 100;  // Typical fixed for gas
+    energy = units * (connection === "commercial" ? tariffs.gas.commercial : tariffs.gas.domestic);
   } else if (utility === "water") {
-    const rates = waterTariff[company];
-    energyCharges = units * rates[connection];
-    fixed = connection === "domestic" ? 50 : 200;  // Fixed monthly
+    energy = units * (connection === "commercial" ? tariffs.water.commercial : tariffs.water.domestic);
   }
-
-  const ed = energyCharges * taxes.ed;
-  const gst = (energyCharges + fixed + ed) * taxes.gst;
-  const fc = utility === "electricity" ? units * taxes.fc : 0;
-  const total = Math.round(energyCharges + fixed + ed + gst + fc + taxes.tv);
-
-  // Breakdown Table
-  const breakdown = [
-    {desc: "Energy Charges", amt: energyCharges.toFixed(0)},
-    {desc: "Fixed Charges", amt: fixed.toFixed(0)},
-    {desc: "Electricity Duty (1.5%)", amt: ed.toFixed(0)},
-    {desc: "GST (17%)", amt: gst.toFixed(0)},
-    {desc: "FC Surcharge", amt: fc.toFixed(0)},
-    {desc: "TV License Fee", amt: taxes.tv},
-    {desc: "<strong>Total Bill</strong>", amt: `<strong>Rs. ${total.toLocaleString()}</strong>`}
-  ];
-
+  
+  const gst = energy * 0.17;
+  const total = Math.ceil(energy + gst + (utility === "electricity" ? units * 0.43 + 35 : 0));
+  
+  const rows = [
+    ["Energy Charges", energy.toFixed(0)],
+    ["GST 17%", gst.toFixed(0)],
+    utility === "electricity" ? ["FC Surcharge + TV Fee", (units * 0.43 + 35).toFixed(0)] : null,
+    ["<strong>Total Payable</strong>", "<strong>Rs. " + total.toLocaleString() + "</strong>"]
+  ].filter(Boolean);
+  
   let html = "";
-  breakdown.forEach(row => html += `<tr><td>${row.desc}</td><td style="text-align:right">Rs. ${row.amt}</td></tr>`);
-
+  rows.forEach(r => html += `<tr><td>${r[0]}</td><td style="text-align:right">${r[1]}</td></tr>`);
+  
   document.getElementById("breakdown").innerHTML = html;
-  document.getElementById("finalAmount").innerHTML = `Your Estimated Bill: <strong>Rs. ${total.toLocaleString()}</strong>`;
+  document.getElementById("finalAmount").innerHTML = "Your Estimated Bill: <strong>Rs. " + total.toLocaleString() + "</strong>";
   document.getElementById("result").style.display = "block";
-  window.scrollTo(0, document.getElementById("result").offsetTop - 100);
+  document.getElementById("result").scrollIntoView({behavior: "smooth"});
 };
 </script>
 </body>
