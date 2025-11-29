@@ -30,10 +30,16 @@
 <div class="container">
   <div class="header">
     <h1>Fetch Water Bill</h1>
-    <p>All Water Utilities • Enter your Account Number</p>
+    <p>All Water Companies • Enter your Account Number</p>
   </div>
   <div class="card">
-    <input type="text" id="waterRef" placeholder="Enter Water Account Number (10-14 digits)" maxlength="14">
+    <select id="company" required>
+      <option value="">Select Water Company</option>
+      <option value="lahore">Lahore Water</option>
+      <option value="islamabad">Islamabad Water</option>
+      <option value="karachi">Karachi Water</option>
+    </select>
+    <input type="text" id="ref" placeholder="Enter Account Number (10-14 digits)" maxlength="14">
     <select id="month">
       <option value="">Select Bill Month</option>
       <option>January 2025</option><option>February 2025</option><option>March 2025</option>
@@ -41,7 +47,7 @@
       <option>July 2025</option><option>August 2025</option><option>September 2025</option>
       <option>October 2025</option><option selected>November 2025</option><option>December 2025</option>
     </select>
-    <button onclick="fetchWaterBill()">Fetch Bill</button>
+    <button onclick="fetchBill()">Fetch Bill</button>
   </div>
 
   <div id="billContainer" class="bill-container">
@@ -68,10 +74,12 @@
 <footer>Pakistan Utility Portal © 2025</footer>
 
 <script>
-function fetchWaterBill() {
-  const ref = document.getElementById("waterRef").value.trim();
+function fetchBill() {
+  const company = document.getElementById("company").value;
+  const ref = document.getElementById("ref").value.trim();
   const month = document.getElementById("month").value;
-  if (!ref || ref.length < 10 || ref.length > 14 || isNaN(ref)) return alert("Enter valid Water Account Number (10-14 digits)");
+  if (!company) return alert("Select Water Company");
+  if (!ref || ref.length < 10 || ref.length > 14 || isNaN(ref)) return alert("Enter valid Account Number (10-14 digits)");
   if (!month) return alert("Select bill month");
 
   document.getElementById("refNo").textContent = ref;
