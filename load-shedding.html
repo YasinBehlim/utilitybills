@@ -50,8 +50,8 @@
         <option value="">Select Area</option>
       </select>
 
-      <select id="subArea" required>
-        <option value="">Select Sub-Area (if available)</option>
+      <select id="subArea">
+        <option value="">Select Sub-Area (optional)</option>
       </select>
 
       <button type="submit">Check Status</button>
@@ -76,213 +76,133 @@
 </div>
 
 <script>
-// Full Pakistan coverage: 25+ cities, 300+ areas, 1000+ sub-areas
-const cities = {
+// Full Pakistan Cities + Areas + Sub-Areas (Fixed Structure)
+const cityData = {
   karachi: {
-    areas: ["Nazimabad","North Nazimabad","Lyari","Clifton","Defence DHA","Gulshan-e-Iqbal","Orangi Town","Korangi","Landhi","Malir","Saddar","Shah Faisal Colony","Surjani Town","Scheme 33","Buffer Zone","Gulistan-e-Johar","FB Area","Gadap Town","Keamari","Bin Qasim","PECHS","Tariq Road","Bahadurabad","Akhtar Colony","Delhi Colony","Garden East","Soldier Bazaar","Jamshed Town","Liaquatabad","Paposh Nagar","Qasba Colony","Gulshan-e-Hadeed","DHA City","Steel Town"],
-    subAreas: {
-      "Nazimabad": ["A Block","B Block","C Block","D Block","E Block","F Block","G Block","H Block"],
-      "North Nazimabad": ["Sector 5A","Sector 5B","Sector 5C","Sector 5D","Sector 5E","Sector 5F","Sector 5G","Sector 5H","Sector 5I","Sector 5J","Sector 5K","Sector 5L","Sector 5M","Sector 5N"],
-      "Lyari": ["Lyari Town","Baghdadi","Khadda Memon Society","Daryaabad","Nai Abadi","Shah Latif Town","Shah Abdul Latif Bhittai Colony","Chakiwara","Singal Khadda","Nawabad","Nabi Bux Goth","Agra Taj Colony","Shah Baig Goth","Kalakot","Mulla Essa Goth","Hingorabad","Kumbharwada","Kachi Memon Society","Siyal Goth","Shah Karim Goth","Chakiwara Goth","Goth Khuda Bux","Goth Abdullah Shah","Goth Abdul Karim","Goth Haji Abdullah","Goth Haji Abdul Karim","Goth Haji Abdullah Shah","Goth Haji Abdul Karim","Goth Haji Abdullah Shah","Goth Haji Abdul Karim"],
-      "Clifton": ["Clifton Block 1","Clifton Block 2","Clifton Block 3","Clifton Block 4","Clifton Block 5","Clifton Block 6","Clifton Block 7","Clifton Block 8","Clifton Block 9","Clifton Cantonment"],
-      "Defence DHA": ["Phase 1","Phase 2","Phase 3","Phase 4","Phase 5","Phase 6","Phase 7","Phase 8","Phase 9","Phase 10","Phase 11","Phase 12","Phase 13","Phase 14","Phase 15","Phase 16","Phase 17","Phase 18","Phase 19","Phase 20"],
-      "Gulshan-e-Iqbal": ["Block 1","Block 2","Block 3","Block 4","Block 5","Block 6","Block 7","Block 8","Block 9","Block 10","Block 11","Block 12","Block 13","Block 14","Block 15","Block 16","Block 17","Block 18","Block 19","Block 20"],
-      "Orangi Town": ["Sector 1","Sector 2","Sector 3","Sector 4","Sector 5","Sector 6","Sector 7","Sector 8","Sector 9","Sector 10","Sector 11","Sector 12","Sector 13","Sector 14","Sector 15","Sector 16","Sector 17","Sector 18","Sector 19","Sector 20"],
-      "Korangi": ["Korangi 1","Korangi 2","Korangi 3","Korangi 4","Korangi 5","Korangi 6","Korangi 7","Korangi 8","Korangi 9","Korangi 10"],
-      "Landhi": ["Landhi 1","Landhi 2","Landhi 3","Landhi 4","Landhi 5","Landhi 6","Landhi 7","Landhi 8","Landhi 9","Landhi 10"],
-      // Add more sub-areas for other areas as needed
+    areas: ["Nazimabad","North Nazimabad","Lyari","Clifton","Defence DHA","Gulshan-e-Iqbal","Gulistan-e-Johar","FB Area","Korangi","Landhi","Malir","Saddar","Shah Faisal Colony","Orangi Town","Surjani Town","Scheme 33","Buffer Zone","Gadap Town","Keamari","Bin Qasim","PECHS","Tariq Road"],
+    subareas: {
+      "Lyari": ["Baghdadi","Khadda","Singolane","Chakiwara","Nawabad","Agra Taj","Shah Baig Line","Kalakot","Hingorabad","Daryaabad","Nabi Bux","Kumbharwada"],
+      "Defence DHA": ["Phase 1","Phase 2","Phase 3","Phase 4","Phase 5","Phase 6","Phase 7","Phase 8","Phase 9","Phase 10"],
+      "Gulshan-e-Iqbal": ["Block 1 to 20"],
+      "Nazimabad": ["Block A","Block B","Block C","Block D","Block E","Block F","Block G"],
+      "North Nazimabad": ["Block A to N"]
     }
   },
   lahore: {
-    areas: ["Gulberg","DHA","Johar Town","Model Town","Wapda Town","Valencia","Garden Town","Shadman","Iqbal Town","Samanabad","Cantt","Anarkali","Township","Faisal Town","Sabzazar","Baghbanpura","Ravi Road","Ichhra","Mozang","Shalimar Town","Wahdat Road","Allama Iqbal Town","Nishtar Colony","Samania Colony","Satukatla","Bazaar Kalan","Bazaar Hakim","Bazaar Sheikhupura"],
-    subAreas: {
-      "Gulberg": ["Gulberg 1","Gulberg 2","Gulberg 3","Gulberg Main Boulevard","Gulberg Heights","Gulberg Greens","Gulberg Residencia"],
-      "DHA": ["Phase 1","Phase 2","Phase 3","Phase 4","Phase 5","Phase 6","Phase 7","Phase 8","Phase 9","Phase 10"],
-      "Johar Town": ["Block R","Block Q","Block P","Block N","Block M","Block L","Block K","Block J","Block H","Block G","Block F","Block E","Block D","Block C","Block B","Block A"],
-      // Add more for other areas
+    areas: ["Gulberg","DHA","Johar Town","Model Town","Wapda Town","Valencia","Garden Town","Iqbal Town","Samanabad","Cantt","Township","Faisal Town","Sabzazar","Baghbanpura","Shalimar Town","Allama Iqbal Town"],
+    subareas: {
+      "DHA": ["Phase 1","Phase 2","Phase 3","Phase 4","Phase 5","Phase 6","Phase 7","Phase 8","Phase 9"],
+      "Johar Town": ["Block A to R"],
+      "Gulberg": ["Gulberg II","Gulberg III","Gulberg IV","Gulberg V"]
     }
   },
   islamabad: {
-    areas: ["G-6","G-7","G-8","G-9","G-10","G-11","F-6","F-7","F-8","F-10","F-11","I-8","I-9","I-10","Blue Area","Bahria Town","DHA Islamabad","Faisal Town","I-8 Markaz","G-13","G-14","F-17","E-11","E-7","E-9","E-12"],
-    subAreas: {
-      "G-9": ["G-9/1","G-9/2","G-9/3","G-9/4","G-9 Markaz"],
-      "F-10": ["F-10/1","F-10/2","F-10/3","F-10/4","F-10 Markaz"],
-      "Bahria Town": ["Phase 1","Phase 2","Phase 3","Phase 4","Phase 5","Phase 6","Phase 7","Phase 8"]
+    areas: ["F-6","F-7","F-8","F-10","F-11","G-6","G-8","G-9","G-10","G-11","I-8","I-9","I-10","Blue Area","Bahria Town","DHA Islamabad"],
+    subareas: {
+      "G-9": ["G-9/1","G-9/2","G-9/3","G-9/4"],
+      "F-10": ["F-10/1","F-10/2","F-10/3","F-10/4"],
+      "Bahria Town": ["Phase 1 to 8"]
     }
   },
-  faisalabad: {
-    areas: ["Civil Lines","Madina Town","Peoples Colony","Susan Road","Sargodha Road","Jaranwala Road","Gulistan Colony","Lyallpur Town","D Ground","Rail Bazar","Ghulam Muhammad Abad","Jhang Bazaar","Gulberg","Satiana Road","Jinnah Colony"],
-    subAreas: {
-      "Peoples Colony": ["Peoples Colony 1","Peoples Colony 2","Peoples Colony 3"],
-      "Madina Town": ["Madina Town 1","Madina Town 2"]
-    }
-  },
-  multan: {
-    areas: ["Cantt","Gulgasht Colony","Model Town","Shalimar Colony","Boson Road","MDA Colony","Bukhari Colony","Qasimabad","Shujabad","Basti Malook","Qurtaba City","Shah Rukn-e-Alam"],
-    subAreas: {
-      "Cantt": ["Cantt 1","Cantt 2"]
-    }
-  },
-  peshawar: {
-    areas: ["Hayatabad","University Town","Cantt","Warsak Road","Ring Road","GT Road","Dalazak Road","Tehkal","Faqirabad","Chamkani","Gulbahar","Yakatut","Khyber Bazaar"],
-    subAreas: {
-      "Hayatabad": ["Phase 1","Phase 2","Phase 3"]
-    }
-  },
-  quetta: {
-    areas: ["Cantt","Jinnah Town","Satellite Town","Zarghoon Road","Sariab Road","Samungli Road","Hazara Town","Pishin Road","Mangocher Road","Nawa Shehr","Kachi Baig","Pashtunabad"],
-    subAreas: {
-      "Jinnah Town": ["Jinnah Town 1","Jinnah Town 2"]
-    }
-  }
+  rawalpindi: { areas: ["Saddar","Satellite Town","Bahria Town","DHA","Cantt","Chaklala","Westbridge"], subareas: {} },
+  faisalabad: { areas: ["Civil Lines","Madina Town","Peoples Colony","Susan Road","Gulistan Colony","D Ground"], subareas: {} },
+  multan: { areas: ["Cantt","Gulgasht","Model Town","Shalimar Colony","Shah Rukn-e-Alam"], subareas: {} },
+  peshawar: { areas: ["Hayatabad","University Town","Cantt","Warsak Road","Ring Road"], subareas: { "Hayatabad": ["Phase 1","Phase 2","Phase 3","Phase 4","Phase 5","Phase 6","Phase 7"] } },
+  quetta: { areas: ["Cantt","Jinnah Town","Satellite Town","Sariab Road"], subareas: {} },
+  gujranwala: { areas: ["Model Town","Satellite Town","Cantt","DC Colony"], subareas: {} },
+  sialkot: { areas: ["Cantt","Paris Road","Model Town","Defence Road"], subareas: {} },
+  hyderabad: { areas: ["Qasimabad","Latifabad","Hirabad"], subareas: {} },
+  bahawalpur: { areas: ["Model Town","Satellite Town","Cantt"], subareas: {} },
+  sargodha: { areas: ["University Road","Satellite Town","Club Road"], subareas: {} }
 };
 
-// Schedule data (expand as needed)
+// Schedule
 const scheduleData = {
-  electricity: {
-    default: ["06:00 – 10:00 → ON","10:00 – 14:00 → OFF","14:00 – 18:00 → ON","18:00 – 22:00 → OFF","22:00 – 06:00 → ON"],
-    "No Load Shedding": ["All Day → ON"]
-  },
-  gas: {
-    all: ["12:00 AM – 05:00 AM → FULL PRESSURE","05:00 AM – 09:00 AM → LOW","09:00 AM – 12:00 PM → FULL PRESSURE","12:00 PM – 12:00 AM → LOW"]
-  },
-  water: {
-    lahore: ["04:00 AM – 10:00 AM → ON","10:00 AM – 02:00 PM → OFF","02:00 PM – 06:00 PM → ON","06:00 PM – 08:00 PM → OFF","08:00 PM – 12:00 AM → ON"],
-    karachi: ["08:00 AM – 04:00 PM → NORMAL","04:00 PM – 08:00 AM → LOW / NO SUPPLY"]
-  }
+  electricity: { default: ["06:00 – 10:00 → ON","10:00 – 14:00 → OFF","14:00 – 18:00 → ON","18:00 – 22:00 → OFF","22:00 – 06:00 → ON"] },
+  gas: { all: ["12:00 AM – 05:00 AM → FULL","05:00 AM – 09:00 AM → LOW","09:00 AM – 12:00 PM → FULL","12:00 PM – 12:00 AM → LOW"] },
+  water: { lahore: ["04:00 AM – 10:00 AM → ON","02:00 PM – 06:00 PM → ON","08:00 PM – 12:00 AM → ON"], karachi: ["08:00 AM – 04:00 PM → NORMAL"] }
 };
 
-// Populate cities when utility selected
+// Populate Cities
 document.getElementById("utility").addEventListener("change", () => {
   const citySelect = document.getElementById("city");
   citySelect.innerHTML = '<option value="">Select City</option>';
-  Object.keys(cities).forEach(key => {
+  Object.keys(cityData).forEach(key => {
     const name = key.charAt(0).toUpperCase() + key.slice(1);
     citySelect.innerHTML += `<option value="${key}">${name}</option>`;
   });
   document.getElementById("area").innerHTML = '<option value="">Select Area</option>';
-  document.getElementById("subArea").innerHTML = '<option value="">Select Sub-Area (if available)</option>';
+  document.getElementById("subArea").innerHTML = '<option value="">Select Sub-Area (optional)</option>';
 });
 
-// Populate areas when city selected
+// Populate Areas
 document.getElementById("city").addEventListener("change", () => {
+  const selected = document.getElementById("city").value;
   const areaSelect = document.getElementById("area");
   areaSelect.innerHTML = '<option value="">Select Area</option>';
-  const selectedCity = document.getElementById("city").value;
-  const cityData = cities[selectedCity] || {};
-  const areas = cityData.areas || [];
-  areas.forEach(a => {
-    areaSelect.innerHTML += `<option value="${a}">${a}</option>`;
-  });
-  document.getElementById("subArea").innerHTML = '<option value="">Select Sub-Area (if available)</option>';
+  const areas = cityData[selected]?.areas || [];
+  areas.forEach(a => areaSelect.innerHTML += `<option value="${a}">${a}</option>`);
+  document.getElementById("subArea").innerHTML = '<option value="">Select Sub-Area (optional)</option>';
 });
 
-// Populate sub-areas when area selected
+// Populate Sub-Areas
 document.getElementById("area").addEventListener("change", () => {
-  const subAreaSelect = document.getElementById("subArea");
-  subAreaSelect.innerHTML = '<option value="">Select Sub-Area (if available)</option>';
-  const selectedCity = document.getElementById("city").value;
-  const selectedArea = document.getElementById("area").value;
-  const subAreas = (cities[selectedCity] || {}).subAreas || {};
-  const list = subAreas[selectedArea] || [];
-  list.forEach(sub => {
-    subAreaSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
-  });
-  if (list.length === 0) {
-    subAreaSelect.style.display = "none";
-  } else {
-    subAreaSelect.style.display = "block";
-  }
+  const city = document.getElementById("city").value;
+  const area = document.getElementById("area").value;
+  const subSelect = document.getElementById("subArea");
+  subSelect.innerHTML = '<option value="">Select Sub-Area (optional)</option>';
+  const subs = cityData[city]?.subareas?.[area] || [];
+  subs.forEach(s => subSelect.innerHTML += `<option>${s}</option>`);
 });
 
-// Submit form
-document.getElementById("form").onsubmit = function(e) {
-  e.preventDefault();
+// Show Result
+function showResult() {
   const utility = document.getElementById("utility").value;
   const city = document.getElementById("city").value;
   const area = document.getElementById("area").value;
-  const subArea = document.getElementById("subArea").value;
+  const subArea = document.getElementById("subArea").value || "";
 
-  if (!utility || !city || !area) {
-    alert("Please select Utility, City and Area");
-    return;
-  }
+  if (!utility || !city || !area) return alert("Please fill all required fields");
 
-  const locationText = subArea ? `${area} (${subArea}), ${document.querySelector("#city option:checked").textContent}` : `${area}, ${document.querySelector("#city option:checked").textContent}`;
-  document.getElementById("location").textContent = 
-    `${document.querySelector("#utility option:checked").textContent} – ${locationText}`;
+  const location = subArea ? `${area} - ${subArea}, ${city.charAt(0).toUpperCase() + city.slice(1)}` : `${area}, ${city.charAt(0).toUpperCase() + city.slice(1)}`;
+  document.getElementById("location").textContent = `${utility.toUpperCase()} – ${location}`;
 
   const now = new Date();
-  const hours = now.getHours();
+  const h = now.getHours();
   document.getElementById("currentTime").textContent = "Updated: " + now.toLocaleTimeString();
 
-  let currentMsg = "";
-  let color = "on";
-
-  // Current Status Logic
+  let status = "", color = "on";
   if (utility === "electricity") {
-    const slots = scheduleData.electricity[area] || scheduleData.electricity.default;
-    if (slots[0].includes("No Load")) {
-      currentMsg = "Power is ON (No Shedding)";
-    } else {
-      currentMsg = (hours >= 6 && hours < 10) || (hours >= 14 && hours < 18) || (hours >= 22 || hours < 6) ? "Power is ON Right Now" : "Load Shedding Active Now";
-      color = currentMsg.includes("ON") ? "on" : "off";
-    }
+    status = (h >= 6 && h < 10) || (h >= 14 && h < 18) || (h >= 22 || h < 6) ? "Power is ON" : "Load Shedding Active";
+    color = status.includes("ON") ? "on" : "off";
   } else if (utility === "gas") {
-    const full = (hours < 5) || (hours >= 9 && hours < 12);
-    currentMsg = full ? "Gas Full Pressure Now" : "Low Pressure Right Now";
-    color = full ? "on" : "low";
+    status = (h < 5 || (h >= 9 && h < 12)) ? "Gas Full Pressure" : "Low Pressure";
+    color = status.includes("Full") ? "on" : "low";
   } else if (utility === "water") {
-    const slots = city === "lahore" ? scheduleData.water.lahore : scheduleData.water.karachi;
-    let isOn = false;
-    slots.forEach(slot => {
-      if (slot.includes("ON") || slot.includes("NORMAL")) isOn = true;
-      if (slot.includes("OFF") || slot.includes("LOW")) isOn = false;
-      const h = parseInt(slot.split(":")[0]);
-      const hour12 = slot.includes("PM") && h !== 12 ? h + 12 : h;
-      if (hours >= hour12) isOn = slot.includes("ON") || slot.includes("NORMAL");
-    });
-    currentMsg = isOn ? "Water Supply ON Now" : "Low / No Water Now";
-    color = isOn ? "on" : "low";
+    status = city === "lahore" ? ((h >= 4 && h < 10) || (h >= 14 && h < 18) || h >= 20 ? "Water ON" : "No Water") : (h >= 8 && h < 16 ? "Water ON" : "Low/No Water");
+    color = status.includes("ON") ? "on" : "low";
   }
 
-  document.getElementById("currentStatus").textContent = currentMsg;
+  document.getElementById("currentStatus").textContent = status;
   document.getElementById("currentStatus").className = "current-status " + color;
 
-  // Full Schedule
+  // Schedule
   const list = document.getElementById("scheduleList");
   list.innerHTML = "";
-  let slots = [];
+  let slots = utility === "gas" ? scheduleData.gas.all : utility === "water" ? (city === "lahore" ? scheduleData.water.lahore : scheduleData.water.karachi) : scheduleData.electricity.default;
 
-  if (utility === "gas") slots = scheduleData.gas.all;
-  else if (utility === "water") slots = city === "lahore" ? scheduleData.water.lahore : scheduleData.water.karachi;
-  else slots = scheduleData.electricity[area] || scheduleData.electricity.default;
-
-  slots.forEach(slot => {
-    const div = document.createElement("div");
-    div.className = "slot";
-    const [time, status] = slot.split(" → ");
-    const cleanStatus = status || time;
-    const tagColor = cleanStatus.includes("ON") || cleanStatus.includes("FULL") || cleanStatus.includes("NORMAL") ? "on" 
-                   : cleanStatus.includes("LOW") ? "low" : "off";
-    div.innerHTML = `<span class="time">${time}</span><span class="status-tag ${tagColor}">${cleanStatus}</span>`;
-    list.appendChild(div);
+  slots.forEach(s => {
+    const [t, st] = s.split(" → ");
+    const c = st?.includes("ON") || st?.includes("FULL") || st?.includes("NORMAL") ? "on" : st?.includes("LOW") ? "low" : "off";
+    list.innerHTML += `<div class="slot"><span class="time">${t}</span><span class="status-tag ${c}">${st || t}</span></div>`;
   });
 
   document.getElementById("result").style.display = "block";
   window.scrollTo(0, document.getElementById("result").offsetTop - 100);
-};
+}
 
-// Auto-update time
-setInterval(() => {
-  document.getElementById("currentTime").textContent = "Updated: " + new Date().toLocaleTimeString();
-}, 60000);
-
-// Form submit
-document.getElementById("form").onsubmit = function(e) {
-  e.preventDefault();
-  showResult();
-};
+document.getElementById("form").onsubmit = e => { e.preventDefault(); showResult(); };
+setInterval(() => { document.getElementById("currentTime").textContent = "Updated: " + new Date().toLocaleTimeString(); }, 60000);
 </script>
 </body>
 </html>
