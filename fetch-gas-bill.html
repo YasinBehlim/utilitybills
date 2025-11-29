@@ -57,13 +57,13 @@
         <p>Consumer No: <strong id="refNo"></strong> | Month: <span id="billMonth">November 2025</span></p>
       </div>
       <table>
-        <tr><td>Consumer Name</td><td><strong>Ali Raza</strong></td></tr>
-        <tr><td>Address</td><td>House #45, Street 12, DHA, Lahore</td></tr>
+        <tr><td>Consumer Name</td><td><strong>---</strong></td></tr>
+        <tr><td>Address</td><td>---</td></tr>
         <tr><td>Bill Issue Date</td><td>28 Nov 2025</td></tr>
         <tr><td>Due Date</td><td>15 Dec 2025</td></tr>
-        <tr><td>Units Consumed</td><td>150 m³</td></tr>
-        <tr><td>Bill Amount</td><td><strong style="font-size:1.4rem;color:#e74c3c">Rs. 6,450</strong></td></tr>
-        <tr><td>Status</td><td><span class="status" id="status">UNPAID</span></td></tr>
+        <tr><td>Units Consumed</td><td>---</td></tr>
+        <tr><td>Bill Amount</td><td><strong style="font-size:1.4rem;color:#e74c3c">Rs. ---</strong></td></tr>
+        <tr><td>Status</td><td><span class="status" id="status">---</span></td></tr>
       </table>
       <button onclick="downloadPDF()">Download PDF</button>
       <button onclick="window.print()" style="background:#3498db;margin-left:10px">Print Bill</button>
@@ -74,23 +74,40 @@
 <footer>Pakistan Utility Portal © 2025</footer>
 
 <script>
-function fetchBill() {
+async function fetchBill() {
   const company = document.getElementById("company").value;
   const ref = document.getElementById("ref").value.trim();
   const month = document.getElementById("month").value;
-  if (!company) return alert("Select Gas Company");
-  if (!ref || ref.length < 10 || ref.length > 14 || isNaN(ref)) return alert("Enter valid Consumer Number (10-14 digits)");
+  if (!company) return alert("Select Company");
+  if (!ref || ref.length < 10 || ref.length > 14 || isNaN(ref)) return alert("Enter valid number (10-14 digits)");
   if (!month) return alert("Select bill month");
 
-  document.getElementById("refNo").textContent = ref;
-  document.getElementById("billMonth").textContent = month;
-  document.getElementById("billContainer").style.display = "block";
-  document.getElementById("billContainer").scrollIntoView({behavior:"smooth"});
+  try {
+    const res = await fetch("bills.json");
+    const data = await res.json();
+    const billData = data.gas[company]?.[ref];
+    if (!billData) return alert("No bill found for this number and company");
 
-  const isPaid = Math.random() > 0.5;
-  const status = document.getElementById("status");
-  status.textContent = isPaid ? "PAID" : "UNPAID";
-  status.className = "status " + (isPaid ? "paid" : "unpaid");
+    document.getElementById("refNo").textContent = ref;
+    document.getElementById("billMonth").textContent = month;
+    document.getElementById("billContainer").style.display = "block";
+    document.getElementById("billContainer").scrollIntoView({behavior:"smooth"});
+
+    const tableRows = document.querySelector("#bill table").rows;
+    tableRows[0].cells[1].innerHTML = `<strong>${billData.name}</strong>`;
+    tableRows[1].cells[1].textContent = billData.address;
+    tableRows[4].cells[1].textContent = billData.units + " m³";
+    tableRows[5].cells[1].innerHTML = `<strong style="font-size:1.4rem;color:#e74c3c">Rs. ${billData.amount}</strong>`;
+
+    const status = document.getElementById("status");
+    const isPaid = Math.random() > 0.5;
+    status.textContent = isPaid ? "PAID" : "UNPAID";
+    status.className = "status " + (isPaid ? "paid" : "unpaid");
+
+  } catch (err) {
+    alert("Error fetching bill. Try again.");
+    console.error(err);
+  }
 }
 
 function downloadPDF() {
@@ -106,7 +123,7 @@ function downloadPDF() {
 }
 
 function shareBill() {
-  const text = `My Gas Bill%0AConsumer No: ${document.getElementById("refNo").textContent}%0AAmount: Rs. 6,450%0AStatus: ${document.getElementById("status").textContent}%0AView yours: ${location.href}`;
+  const text = `My Gas Bill%0AConsumer No: ${document.getElementById("refNo").textContent}%0AAmount: ${document.querySelector("#bill table tr:nth-child(6) td strong").textContent}%0AStatus: ${document.getElementById("status").textContent}%0AView yours: ${location.href}`;
   window.open(`https://wa.me/?text=${text}`);
 }
 </script>
