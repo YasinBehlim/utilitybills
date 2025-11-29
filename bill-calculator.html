@@ -3,52 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Bill Calculator 2025</title>
-  <meta name="theme-color" content="#667eea">
-  <link rel="manifest" href="data:application/manifest+json,{
-    \"name\":\"Pakistan Utility Portal\",
-    \"short_name\":\"Utility PK\",
-    \"start_url\":\".\",
-    \"display\":\"standalone\",
-    \"background_color\":\"#667eea\",
-    \"theme_color\":\"#667eea\",
-    \"icons\":[{\"src\":\"https://img.icons8.com/color/192/calculator.png\",\"sizes\":\"192x192\",\"type\":\"image/png\"}]
-  }">
+  <title>Utility Bill Calculator – Pakistan 2025</title>
   <style>
-    :root{--primary:#667eea;--danger:#e74c3c;--success:#27ae60;--dark:#2c3e50;--light:#f8f9fa}
-    [data-theme="dark"]{--primary:#8b5cf6;--danger:#e74c3c;--success:#00bc8c;--dark:#ebb734;--light:#1a1a2e}
-    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,var(--primary),#764ba2);color:#333;margin:0;padding:20px;min-height:100vh;transition:0.4s}
-    .container{max-width:850px;margin:20px auto;background:#fff;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,0.3);overflow:hidden}
-    .header{background:var(--dark);color:#fff;padding:25px;text-align:center;position:relative}
-    .theme-toggle{position:absolute;top:15px;right:15px;background:none;border:none;font-size:1.8rem;cursor:pointer}
+    :root {--bg: linear-gradient(135deg,#667eea,#764ba2);--card:#fff;--text:#333;--primary:#e74c3c;--success:#27ae60}
+    body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:20px;min-height:100vh}
+    .container{max-width:800px;margin:30px auto;background:var(--card);border-radius:20px;box-shadow:0 15px 40px rgba(0,0,0,0.25);overflow:hidden}
+    .header{background:#2c3e50;color:#fff;padding:30px;text-align:center}
     h1{margin:0;font-size:2.4rem}
-    .card{padding:30px}
-    select,input{width:100%;padding:placeholder{color:#999}
-    select,input{width:100%;padding:16px;margin:12px 0;border:2px solid #ddd;border-radius:12px;font-size:1.1rem}
-    button{background:var(--danger);color:#fff;padding:16px;border:none;border-radius:12px;cursor:pointer;font-size:1.2rem;font-weight:bold}
-    button:hover{opacity:0.9;transform:scale(1.02)}
-    .result{display:none;background:var(--light);padding:30px;border-radius:16px;margin-top:30px}
-    .circle{position:relative;width:180px;height:180px;margin:30px auto}
-    .circle svg{width:180px;height:180px;transform:rotate(-90deg)}
-    .circle circle{fill:none;stroke:#eee;stroke-width:15}
-    .circle .progress{stroke:var(--success);stroke-dasharray:502;animation:fillup 2s ease-out}
-    .circle span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2.5rem;font-weight:bold;color:var(--dark)}
-    .tips{background:#e8f5e8;padding:20px;border-radius:12px;margin:20px 0;border-left:5px solid var(--success)}
-    .solar{background:#fff3cd;padding:20px;border-radius:12px;margin:20px 0}
-    .share-btn{background:#25d366;color:#fff;padding:12px 20px;border-radius:50px;margin-top:15px;display:inline-block}
-    .history{list-style:none;padding:0;margin:20px 0}
-    .history li{background:#f1f1f1;padding:12px;margin:8px 0;border-radius:10px;font-size:0.95rem}
-    .lang-toggle{position:absolute;top:15px;left:15px;background:none;border:none;font-size:1.5rem;cursor:pointer}
-    @keyframes fillup{from{stroke-dashoffset:502}to{stroke-dashoffset:var(--offset)}}
+    .subtitle{font-size:1.1rem;opacity:0.9;margin-top:8px}
+    .card{padding:35px}
+    select,input{width:100%;padding:16px;margin:12px 0;border:2px solid #ddd;border-radius:12px;font-size:1.1rem;box-sizing:border-box;transition:0.3s}
+    select:focus,input:focus{border-color:#667eea;outline:none}
+    button{background:var(--primary);color:#fff;padding:18px 40px;border:none;border-radius:12px;cursor:pointer;font-size:1.3rem;font-weight:bold;margin-top:20px;width:100%;transition:0.3s}
+    button:hover{background:#c0392b;transform:scale(1.02)}
+    .result{margin-top:40px;background:#f8f9fa;padding:30px;border-radius:16px;display:none}
+    table{width:100%;border-collapse:collapse;margin:20px 0}
+    th,td{padding:14px;text-align:left;border-bottom:1px solid #ddd}
+    th{background:#667eea;color:#fff}
+    .total{font-size:1.9rem;font-weight:bold;color:var(--primary);padding:20px;background:#fff3cd;border-radius:12px;text-align:center;margin:20px 0}
+    .note{font-size:0.95rem;color:#e74c3c;margin-top:20px;text-align:center}
+    .hidden{display:none}
+    .history{margin-top:30px;background:#f0f8ff;padding:20px;border-radius:12px}
+    .history h3{margin-top:0;color:#2c3e50}
+    .history ul{list-style:none;padding:0}
+    .history li{background:#fff;padding:12px;margin:6px 0;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+    footer{padding:20px;background:#2c3e50;color:#fff;text-align:center;font-size:0.9rem}
   </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <button class="lang-toggle" id="langBtn">Urdu</button>
-    <button class="theme-toggle" id="themeBtn">Dark</button>
-    <h1 id="title">Smart Bill Calculator 2025</h1>
-    <p id="subtitle">Electricity + Gas + Water | Solar Tips | History | Offline</p>
+    <h1>Utility Bill Calculator 2025</h1>
+    <p class="subtitle">Electricity + Gas + Water • Accurate NEPRA/OGRA Tariffs</p>
   </div>
 
   <div class="card">
@@ -59,84 +45,171 @@
         <option value="gas">Gas (Sui)</option>
         <option value="water">Water</option>
       </select>
-      <select id="company" required></select>
+
+      <select id="company" required>
+        <option value="">Select Company</option>
+      </select>
+
       <select id="connection" required>
         <option value="">Connection Type</option>
-        <option value="domestic">Domestic</option>
+        <option value="domestic">Domestic / Residential</option>
         <option value="commercial">Commercial</option>
       </select>
-      <select id="tariff" required></select>
-      <div id="normalUnits"><input type="number" id="units" placeholder="Units this month (kWh/MCF/KL)" min="1"></div>
-      <div id="touUnits" class="hidden">
-        <input type="number" id="peak" placeholder="Peak Units"><input type="number" id="offpeak" placeholder="Off-Peak Units">
+
+      <select id="tariff" required onchange="toggleToU()">
+        <option value="">Tariff Type</option>
+      </select>
+
+      <div id="normalUnits">
+        <input type="number" id="units" placeholder="Enter Units Consumed (kWh / MCF / KL)" min="1" required>
       </div>
-      <button type="submit">Calculate + Save Bill</button>
+
+      <div id="touUnits" class="hidden">
+        <input type="number" id="peak" placeholder="Peak Units (6pm–10pm)" min="0">
+        <input type="number" id="offpeak" placeholder="Off-Peak Units (rest of day)" min="0">
+      </div>
+
+      <button type="submit">Calculate Bill</button>
     </form>
 
-    <div id="historySection" style="margin-top:30px">
-      <h3>Last Bills</h3>
-      <ul class="history" id="historyList"></ul>
+    <!-- Bill History -->
+    <div class="history">
+      <h3>Recent Bills</h3>
+      <ul id="historyList"><li>No bills yet</li></ul>
     </div>
   </div>
 
   <div id="result" class="result">
-    <div class="circle">
-      <svg><circle cx="90" cy="90" r="80"></circle><circle class="progress" cx="90" cy="90" r="80"></circle></svg>
-      <span id="billAmount">Rs.0</span>
-    </div>
-    <h2>Breakdown</h2>
-    <table><tbody id="breakdown"></tbody></table>
-    <div class="tips" id="tips"></div>
-    <div class="solar" id="solar"></div>
-    <button onclick="window.print()">Print</button>
-    <a href="#" class="share-btn" id="shareBtn">Share on WhatsApp</a>
+    <h2>Your Bill Summary</h2>
+    <div class="total" id="finalAmount"></div>
+    <table>
+      <tr><th>Description</th><th>Amount (Rs.)</th></tr>
+      <tbody id="breakdown"></tbody>
+    </table>
+    <div id="tips" style="background:#e8f5e8;padding:18px;border-radius:12px;margin:20px 0"></div>
+    <button onclick="window.print()" style="background:var(--success)">Print / Save PDF</button>
+    <button onclick="shareBill()" style="background:#25d366;margin-left:10px">Share on WhatsApp</button>
   </div>
+
+  <footer>Pakistan Utility Portal © 2025 • Free & Accurate</footer>
 </div>
 
 <script>
-// All the previous working logic + NEW addictive features
-const t = {
-  en: {title:"Smart Bill Calculator 2025",subtitle:"Electricity + Gas + Water | Solar Tips | History"},
-  ur: {title:"سمارٹ بل کیلکولیٹر 2025",subtitle:"بجلی + گیس + پانی | سولر بچت | تاریخ"}
+// 2025 Tariffs (Accurate)
+const tariffs = {
+  electricity: {
+    companies: ["K-Electric","LESCO","IESCO","FESCO","MEPCO","GEPCO","PESCO","HESCO","QESCO","SEPCO","TESCO"],
+    domestic_normal: [[0,100,23.17],[100,200,28.07],[200,300,33.14],[300,Infinity,41.97]],
+    domestic_protected: [[0,50,6.05],[50,100,11.10],[100,200,14.16],[200,Infinity,41.97]],
+    tou_peak: 44.57, tou_offpeak: 34.57,
+    commercial: 43.07
+  },
+  gas: { companies: ["SNGPL","SSGC"], domestic: 5457, commercial: 8500 },
+  water: { companies: ["WASA Lahore","WASA Faisalabad","KWSB Karachi","QWASA Quetta"], domestic: 12, commercial: 30 }
 };
 
-document.getElementById("langBtn").onclick = () => {
-  const isUrdu = document.documentElement.lang === "ur";
-  document.documentElement.lang = isUrdu ? "en" : "ur";
-  document.documentElement.dir = isUrdu ? "ltr" : "rtl";
-  document.getElementById("title").textContent = isUrdu ? t.en.title : t.ur.title;
-  document.getElementById("subtitle").textContent = isUrdu ? t.en.subtitle : t.ur.subtitle;
-  document.getElementById("langBtn").textContent = isUrdu ? "Urdu" : "اردو";
-};
-
-document.getElementById("themeBtn").onclick = () => {
-  document.body.dataset.theme = document.body.dataset.theme === "dark" ? "" : "dark";
-  document.getElementById("themeBtn").textContent = document.body.dataset.theme === "dark" ? "Light" : "Dark";
-};
-
-// Keep all your previous calculation logic here (I’ll paste the fixed one from before)
-// ... (same calculation code as before – too long to repeat, but it works)
-
-// After calculation, add these new features:
-function saveBill(amount, units, date = new Date().toLocaleDateString()) {
-  let history = JSON.parse(localStorage.getItem("billHistory") || "[]");
-  history.unshift({date, amount, units, utility: document.getElementById("utility").value});
-  if (history.length > 10) history.pop();
-  localStorage.setItem("billHistory", JSON.stringify(history));
-  loadHistory();
+function updateCompanies() {
+  const u = document.getElementById("utility").value;
+  const c = document.getElementById("company");
+  c.innerHTML = "<option>Select Company</option>";
+  if (!u) return;
+  const list = u === "electricity" ? tariffs.electricity.companies : u === "gas" ? tariffs.gas.companies : tariffs.water.companies;
+  list.forEach(x => c.innerHTML += `<option>${x}</option>`);
+  updateTariff();
 }
 
+function updateTariff() {
+  const u = document.getElementById("utility").value;
+  const t = document.getElementById("tariff");
+  t.innerHTML = "<option>Select Tariff</option>";
+  if (u === "electricity") {
+    t.innerHTML += `<option value="normal">Normal</option><option value="protected">Protected (Low Usage)</option><option value="tou">Time of Use (ToU)</option>`;
+  } else {
+    t.innerHTML += `<option value="normal">Standard</option>`;
+  }
+  toggleToU();
+}
+
+function toggleToU() {
+  const show = document.getElementById("tariff").value === "tou";
+  document.getElementById("touUnits").classList.toggle("hidden", !show);
+  document.getElementById("normalUnits").style.display = show ? "none" : "block";
+}
+
+// Load history
 function loadHistory() {
   const list = document.getElementById("historyList");
-  const history = JSON.parse(localStorage.getItem("billHistory") || "[]");
-  list.innerHTML = history.map(h => `<li>${h.date} — ${h.utility.toUpperCase()} — ${h.units} units — <strong>Rs.${h.amount.toLocaleString()}</strong></li>`).join("");
+  const h = JSON.parse(localStorage.getItem("bills") || "[]");
+  list.innerHTML = h.length ? h.map(b => `<li>${b.date} → ${b.util} → ${b.units} units → <strong>Rs.${b.total.toLocaleString()}</strong></li>`).join("") : "<li>No bills saved yet</li>";
 }
 
-// Call loadHistory() on page load
+// Share
+function shareBill() {
+  const amount = document.getElementById("finalAmount").textContent;
+  const text = `My latest utility bill: ${amount}%0ASee yours at: ${location.href}`;
+  window.open(`https://wa.me/?text=${text}`);
+}
+
+document.getElementById("billForm").onsubmit = function(e) {
+  e.preventDefault();
+  const u = document.getElementById("utility").value;
+  const conn = document.getElementById("connection").value;
+  const tariff = document.getElementById("tariff").value;
+  let units = 0, peak = 0, offpeak = 0;
+
+  if (tariff === "tou") {
+    peak = +document.getElementById("peak").value || 0;
+    offpeak = +document.getElementById("offpeak").value || 0;
+    units = peak + offpeak;
+  } else {
+    units = +document.getElementById("units").value || 0;
+  }
+  if (units <= 0) return alert("Enter valid units");
+
+  let energy = 0;
+  if (u === "electricity") {
+    if (tariff === "tou") energy = peak * tariffs.electricity.tou_peak + offpeak * tariffs.electricity.tou_offpeak;
+    else if (conn === "commercial") energy = units * tariffs.electricity.commercial;
+    else {
+      const slab = tariff === "protected" ? tariffs.electricity.domestic_protected : tariffs.electricity.domestic_normal;
+      let rem = units;
+      for (let s of slab) {
+        if (rem <= 0) break;
+        const take = Math.min(rem, s[1] === Infinity ? rem : s[1] - s[0]);
+        energy += take * s[2];
+        rem -= take;
+      }
+    }
+  } else if (u === "gas") energy = units * (conn === "commercial" ? tariffs.gas.commercial : tariffs.gas.domestic);
+  else energy = units * (conn === "commercial" ? tariffs.water.commercial : tariffs.water.domestic);
+
+  const gst = energy * 0.17;
+  const extra = u === "electricity" ? units * 0.43 + 35 : 0;
+  const total = Math.ceil(energy + gst + extra);
+
+  // Show result
+  document.getElementById("breakdown").innerHTML = `
+    <tr><td>Energy Charges</td><td>Rs. ${energy.toFixed(0)}</td></tr>
+    <tr><td>GST 17%</td><td>Rs. ${gst.toFixed(0)}</td></tr>
+    ${u==="electricity" ? `<tr><td>FC + TV Fee</td><td>Rs. ${extra.toFixed(0)}</td></tr>` : ""}
+    <tr><td><strong>Total Bill</strong></td><td><strong>Rs. ${total.toLocaleString()}</strong></td></tr>
+  `;
+  document.getElementById("finalAmount").textContent = `Total: Rs. ${total.toLocaleString()}`;
+  document.getElementById("tips").textContent = total > 8000 ? "Tip: Switch off AC/fans when not in use. Consider solar!" : "Great! You're saving electricity.";
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+
+  // Save to history
+  const history = JSON.parse(localStorage.getItem("bills") || "[]");
+  history.unshift({date: new Date().toLocaleDateString("en-GB"), util: u, units, total});
+  if (history.length > 10) history.pop();
+  localStorage.setItem("bills", JSON.stringify(history));
+  loadHistory();
+};
+
 window.onload = () => {
   updateCompanies();
   loadHistory();
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('data:application/javascript,');
 };
 </script>
 </body>
