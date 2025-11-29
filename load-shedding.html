@@ -30,7 +30,7 @@
   <div class="card">
     <form id="form">
       <select id="city" required>
-        <option value="">Select City / Major Area</option>
+        <option value="">Select Your City</option>
         <option value="karachi">Karachi</option>
         <option value="lahore">Lahore</option>
         <option value="islamabad">Islamabad / Rawalpindi</option>
@@ -38,19 +38,27 @@
         <option value="multan">Multan</option>
         <option value="peshawar">Peshawar</option>
         <option value="quetta">Quetta</option>
+        <option value="gujranwala">Gujranwala</option>
+        <option value="sialkot">Sialkot</option>
+        <option value="hyderabad">Hyderabad</option>
+        <option value="bahawalpur">Bahawalpur</option>
+        <option value="sargodha">Sargodha</option>
+        <option value="rahimyarkhan">Rahim Yar Khan</option>
+        <option value="jhang">Jhang</option>
+        <option value="sheikhupura">Sheikhupura</option>
       </select>
 
       <select id="area" required>
-        <option value="">First select a city above</option>
+        <option value="">First select city above</option>
       </select>
- 
+
       <button type="submit">Check Schedule</button>
     </form>
   </div>
 
   <div id="result" class="result">
     <h2>Today's Load Shedding – <span id="fullArea"></span></h2>
-    <p><strong>Expected Duration:</strong> <span id="time"></span></p>
+    <p><strong>Duration:</strong> <span id="time"></span></p>
     <p><strong>Reason:</strong> <span id="reason"></span></p>
     <div id="status" class="status"></div>
     <button onclick="window.print()" class="download">Download as PDF</button>
@@ -60,7 +68,77 @@
 </div>
 
 <script>
-// Areas by city – keys now exactly match the <option value="">
+// Complete Pakistan-wide area database
 const areas = {
-  karachi: [
-    "Nazimabad A Block","Nazimabad B Block","Nazimabad C Block","Naz
+  karachi: ["Nazimabad","North Nazimabad","North Karachi","Gulshan-e-Iqbal","Gulistan-e-Johar","FB Area","Lyari","Saddar","Clifton","Defence (DHA)","Korangi","Landhi","Malir","Shah Faisal Colony","Orangi Town","Surjani Town","Scheme 33","Buffer Zone","Gulshan-e-Maymar"],
+  lahore: ["Model Town","Gulberg","DHA","Johar Town","Wapda Town","Valencia","Garden Town","Shadman","Iqbal Town","Samanabad","Cantt","Anarkali","Township","Allama Iqbal Town","Faisal Town","Sabzazar","Baghbanpura","Ravi Road"],
+  islamabad: ["G-6","G-7","G-8","G-9","G-10","G-11","F-6","F-7","F-8","F-10","F-11","I-8","I-9","I-10","Blue Area","Bahria Town","DHA Islamabad","Rawalpindi Saddar","Satellite Town"],
+  faisalabad: ["Civil Lines","Madina Town","Peoples Colony","Sargodha Road","Jaranwala Road","Susan Road","Gulistan Colony","Lyallpur Town"],
+  multan: ["Cantt","Gulgasht Colony","Model Town","Shalimar Colony","Boson Road","MDA Colony","Bukhari Colony"],
+  peshawar: ["University Town","Hayatabad","Cantt","Warsak Road","Ring Road","GT Road","Dalazak Road"],
+  quetta: ["Cantt","Jinnah Town","Satellite Town","Zarghoon Road","Sariab Road"],
+  gujranwala: ["Model Town","Satellite Town","Peoples Colony","Cantt","DC Colony"],
+  sialkot: ["Cantt","Paris Road","Model Town","Defence Road","Sambrial"],
+  hyderabad: ["Qasimabad","Latifabad","Hirabad","Tando Jam Road"],
+  bahawalpur: ["Model Town","Satellite Town","Cantt","Ahmedpur East Road"],
+  sargodha: ["University Road","Satellite Town","Club Road","City Road"],
+  rahimyarkhan: ["Model Town","Satellite Town","Canal View"],
+  jhang: ["Satellite Town","Civil Lines","Gojra Road"],
+  sheikhupura: ["Civil Lines","Housing Colony","Faisalabad Road"]
+};
+
+// Real-time style schedule (you can update anytime)
+const schedule = {
+  "Nazimabad": {time:"10:00 AM – 02:00 PM", reason:"Scheduled"},
+  "North Nazimabad": {time:"No major shedding", reason:"Better supply"},
+  "Clifton": {time:"Rarely affected", reason:"VIP area"},
+  "Defence (DHA)": {time:"No load shedding", reason:"Exempted"},
+  "Model Town": {time:"No shedding", reason:"Improved grid"},
+  "Gulberg": {time:"1–2 hours", reason:"Minor cuts"},
+  "G-9": {time:"No shedding", reason:"Capital supply"},
+  "F-10": {time:"No shedding", reason:"VIP sector"},
+  "Lyari": {time:"4–6 hours", reason:"Local faults"},
+  "Orangi Town": {time:"6–8 hours", reason:"High demand area"}
+};
+
+document.getElementById("city").addEventListener("change", function() {
+  const cityKey = this.value;
+  const areaSelect = document.getElementById("area");
+  areaSelect.innerHTML = '<option value="">Select Your Area</option>';
+
+  if (cityKey && areas[cityKey]) {
+    areas[cityKey].forEach(area => {
+      const opt = document.createElement("option");
+      opt.value = area;
+      opt.textContent = area;
+      areaSelect.appendChild(opt);
+    });
+  }
+});
+
+document.getElementById("form").onsubmit = function(e) {
+  e.preventDefault();
+  const cityText = document.getElementById("city").options[document.getElementById("city").selectedIndex].text;
+  const area = document.getElementById("area").value;
+
+  if (!area) {
+    alert("Please select your area");
+    return;
+  }
+
+  const data = schedule[area] || {time:"2–6 hours", reason:"General load management (common in most areas)"};
+  const isOn = data.time.includes("No") || data.time.includes("Rarely");
+
+  document.getElementById("fullArea").textContent = area + ", " + cityText;
+  document.getElementById("time").textContent = data.time;
+  document.getElementById("reason").textContent = data.reason;
+
+  const s = document.getElementById("status");
+  s.textContent = isOn ? "Power ON" : "Load Shedding Active";
+  s.className = "status " + (isOn ? "on" : "off");
+
+  document.getElementById("result").style.display = "block";
+};
+</script>
+</body>
+</html>
