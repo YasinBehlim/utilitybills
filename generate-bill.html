@@ -1,116 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fetch Bill - Pakistan Utility Portal</title>
   <style>
-    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7fa; color: #2c3e50; margin: 0; padding: 20px; line-height: 1.6; }
-    .container { max-width: 700px; margin: 40px auto; text-align: center; }
-    .back-link { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
-    h1 { font-size: 2.2rem; color: #2c3e50; margin-bottom: 10px; }
-    p { color: #555; margin-bottom: 30px; }
-    .form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    .form-group { margin-bottom: 18px; text-align: left; }
-    label { display: block; margin-bottom: 6px; font-weight: bold; color: #2c3e50; }
-    input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-    button { background: #3498db; color: white; padding: 14px 30px; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
-    button:hover { background: #2980b9; }
-    .result { margin-top: 40px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: none; }
-    .status { font-size: 1.3rem; font-weight: bold; padding: 10px; border-radius: 8px; }
-    .paid { background: #d4edda; color: #155724; }
-    .unpaid { background: #f8d7da; color: #721c24; }
-    .download-btn { background: #27ae60; margin-top: 20px; padding: 12px 25px; }
-    .download-btn:hover { background: #219653; }
-    footer { margin-top: 60px; color: #777; font-size: 0.9rem; }
+    body{font-family:'Segoe UI',sans-serif;background:#f4f7fa;color:#2c3e50;margin:0;padding:20px;line-height:1.6}
+    .container{max-width:700px;margin:40px auto;text-align:center}
+    .back{display:inline-block;margin:20px 0;color:#3498db;text-decoration:none;font-weight:bold}
+    h1{font-size:2.2rem;margin-bottom:10px}
+    .card{background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+    input,select{width:100%;padding:12px;margin:10px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
+    button{background:#3498db;color:#fff;padding:14px 30px;border:none;border-radius:8px;cursor:pointer;font-size:1.1rem}
+    button:hover{background:#2980b9}
+    .result{margin-top:40px;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.08);display:none}
+    .status{font-size:1.5rem;font-weight:bold;padding:12px;border-radius:8px;margin:15px 0}
+    .paid{background:#d4edda;color:#155724}
+    .unpaid{background:#f8d7da;color:#721c24}
+    .download{background:#27ae60;color:#fff;padding:12px 25px;border:none;border-radius:8px;cursor:pointer}
+    footer{margin-top:60px;color:#777;font-size:.9rem}
   </style>
 </head>
 <body>
+<div class="container">
+  <a href="index.html" class="back">Back to Home</a>
+  <h1>Fetch Your Bill</h1>
+  <p>Enter your consumer number to view your bill</p>
 
-  <div class="container">
-    <a href="index.html" class="back-link">Back to Home</a>
-    <h1>Fetch Your Bill</h1>
-    <p>Select utility and enter details to view & download your bill</p>
-
-    <div class="form-card">
-      <form id="fetchBillForm">
-        <div class="form-group">
-          <label for="utilityType">Utility Type</label>
-          <select id="utilityType" required>
-            <option value="">Select Utility</option>
-            <option value="electricity">Electricity</option>
-            <option value="gas">Gas</option>
-            <option value="water">Water</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="consumerNumber">Consumer / Reference Number</label>
-          <input type="text" id="consumerNumber" placeholder="Enter your number" required />
-        </div>
-
-        <div class="form-group">
-          <label for="billMonth">Bill Month</label>
-          <select id="billMonth" required>
-            <option value="">Select Month</option>
-            <option value="2025-11">November 2025</option>
-            <option value="2025-10">October 2025</option>
-            <option value="2025-09">September 2025</option>
-          </select>
-        </div>
-
-        <button type="submit">Fetch Bill</button>
-      </form>
-    </div>
-
-    <!-- Result will appear here -->
-    <div id="billResult" class="result">
-      <h2>Bill Details</h2>
-      <p><strong>Consumer:</strong> <span id="resultConsumer"></span></p>
-      <p><strong>Amount:</strong> Rs. <span id="resultAmount"></span></p>
-      <p><strong>Due Date:</strong> <span id="resultDue"></span></p>
-      <div id="resultStatus" class="status"></div>
-      <button onclick="downloadPDF()" class="download-btn">Download PDF</button>
-    </div>
-
-    <footer>Pakistan Utility Portal © 2025 • Simple & Fast</footer>
+  <div class="card">
+    <form id="form">
+      <select id="utility" required>
+        <option value="">Select Utility</option>
+        <option value="electricity">Electricity</option>
+        <option value="water">Water</option>
+        <option value="gas">Gas</option>
+      </select>
+      <input type="text" id="ref" placeholder="Consumer Number (e.g. 0400010804246)" required>
+      <button type="submit">Fetch Bill</button>
+    </form>
   </div>
 
-  <script>
-    document.getElementById("fetchBillForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+  <div id="result" class="result">
+    <h2 id="type">Bill</h2>
+    <p><strong>Consumer:</strong> <span id="consumer"></span></p>
+    <p><strong>Provider:</strong> <span id="provider"></span></p>
+    <p><strong>Area:</strong> <span id="area"></span></p>
+    <p id="units-line" style="display:none"><strong>Units:</strong> <span id="units"></span></p>
+    <p><strong>Amount:</strong> Rs. <span id="amount"></span></p>
+    <p><strong>Due Date:</strong> <span id="due"></span></p>
+    <div id="status" class="status"></div>
+    <button onclick="window.print()" class="download">Download as PDF</button>
+  </div>
 
-      // Simulate bill fetch (replace with real API later if you want)
-      const consumer = document.getElementById("consumerNumber").value;
-      const month = document.getElementById("billMonth").options[document.getElementById("billMonth").selectedIndex].text;
+  <footer>Pakistan Utility Portal © 2025</footer>
+</div>
 
-      // Random demo data
-      const amount = Math.floor(Math.random() * 8000) + 1500;
-      const isPaid = Math.random() > 0.5;
-      const dueDate = "15 Dec 2025";
+<script>
+const bills = {
+  "0400010804246": {type:"Electricity", provider:"K-Electric", area:"Karachi South", units:176, amount:12026, due:"2025-11-13", paid:false},
+  "W12345": {type:"Water", provider:"KWSB", area:"Karachi South", amount:2500, due:"2025-11-20", paid:true},
+  "G12345": {type:"Gas", provider:"SSGC", area:"Karachi", amount:4800, due:"2025-11-18", paid:false}
+};
 
-      document.getElementById("resultConsumer").textContent = consumer;
-      document.getElementById("resultAmount").textContent = amount.toLocaleString();
-      document.getElementById("resultDue").textContent = dueDate;
+document.getElementById("form").onsubmit = function(e) {
+  e.preventDefault();
+  const utility = document.getElementById("utility").value;
+  const ref = document.getElementById("ref").value.trim();
+  const bill = bills[ref];
 
-      const statusEl = document.getElementById("resultStatus");
-      if (isPaid) {
-        statusEl.textContent = "PAID";
-        statusEl.className = "status paid";
-      } else {
-        statusEl.textContent = "UNPAID";
-        statusEl.className = "status unpaid";
-      }
+  if (!bill || bill.type.toLowerCase() !== utility) {
+    alert("No bill found for this number/utility. Try 0400010804246 for Electricity.");
+    return;
+  }
 
-      document.getElementById("billResult").style.display = "block";
-    });
+  document.getElementById("type").textContent = bill.type + " Bill";
+  document.getElementById("consumer").textContent = ref;
+  document.getElementById("provider").textContent = bill.provider;
+  document.getElementById("area").textContent = bill.area;
+  document.getElementById("amount").textContent = bill.amount.toLocaleString();
+  document.getElementById("due").textContent = bill.due;
 
-    function downloadPDF() {
-      alert("PDF Download Started! (In real version, this will generate actual PDF)");
-      // Real PDF generation can be added later using jsPDF library (1 line)
-      window.print(); // Simple fallback: prints the bill section
-    }
-  </script>
+  if (bill.units) {
+    document.getElementById("units").textContent = bill.units;
+    document.getElementById("units-line").style.display = "block";
+  } else {
+    document.getElementById("units-line").style.display = "none";
+  }
 
+  const status = document.getElementById("status");
+  status.textContent = bill.paid ? "PAID" : "UNPAID";
+  status.className = "status " + (bill.paid ? "paid" : "unpaid");
+
+  document.getElementById("result").style.display = "block";
+};
+</script>
 </body>
 </html>
