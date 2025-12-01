@@ -1,17 +1,68 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fetch Gas Bill - Live</title>
-<style>body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#e67e22,#d35400);margin:0;padding:20px;min-height:100vh;color:#fff}
-.container{max-width:700px;margin:40px auto;background:#fff;color:#333;border-radius:20px;padding:40px;box-shadow:0 20px 50px rgba(0,0,0,0.4);text-align:center}
-h1{font-size:2.8rem;color:#e67e22;margin:0}
-/* Same styles as above */</style></head><body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetch Gas Bill - Live</title>
+  <style>
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#f39c12,#e67e22);margin:0;padding:20px;min-height:100vh;color:#fff}
+    .container{max-width:700px;margin:40px auto;background:#fff;color:#333;border-radius:20px;padding:40px;box-shadow:0 20px 50px rgba(0,0,0,0.4);text-align:center}
+    h1{font-size:2.8rem;color:#f39c12;margin:0}
+    select,input,button{width:100%;padding:18px;margin:15px 0;border-radius:12px;font-size:1.2rem;border:none}
+    button{background:#27ae60;color:#fff;cursor:pointer;font-weight:bold}
+    button:hover{background:#1e8449}
+    .result{margin-top:30px;padding:30px;background:#f8f9fa;border-radius:16px;display:none}
+    .status{padding:10px 30px;border-radius:50px;color:#fff;font-weight:bold;display:inline-block;margin:10px}
+    .paid{background:#27ae60}.unpaid{background:#e74c3c}
+  </style>
+</head>
+<body>
 <div class="container">
   <h1>Gas Bill</h1>
   <p>SNGPL • SSGC • Live Data</p>
-  <select id="type"><option value="sngpl">SNGPL (Punjab/KPK)</option><option value="ssgc">SSGC (Sindh/Balochistan)</option></select>
+  <select id="type">
+    <option value="sngpl">SNGPL (Punjab/KPK)</option>
+    <option value="ssgc">SSGC (Sindh/Balochistan)</option>
+  </select>
   <input type="text" id="ref" placeholder="Enter Consumer Number" maxlength="20">
   <button onclick="fetchLiveBill()">Fetch Live Bill</button>
-  <div class="result" id="result">/* Same result block as electric */</div>
+  <div class="result" id="result">
+    <h2>Bill Found!</h2>
+    <p><strong>Name:</strong> <span id="name">—</span></p>
+    <p><strong>Amount:</strong> <big id="amount">—</big></p>
+    <p><strong>Due Date:</strong> <span id="due">—</span></p>
+    <p><strong>Status:</strong> <span id="status" class="status unpaid">UNPAID</span></p>
+    <button onclick="window.print()" style="background:#3498db">Print / Save PDF</button>
+    <button onclick="shareBill()" style="background:#25d366">Share on WhatsApp</button>
+  </div>
 </div>
-<script>/* Same script as electric, only color change */</script>
-</body></html>
+<script>
+  async function fetchLiveBill() {
+    const type = document.getElementById("type").value;
+    const number = document.getElementById("ref").value.trim();
+    if (!number) return alert("Enter consumer number");
+    const response = await fetch("http://localhost:3000/api/bill", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({type, number})
+    });
+    const data = await response.json();
+    if (data.success) {
+      document.getElementById("name").textContent = data.name;
+      document.getElementById("amount").textContent = data.amount;
+      document.getElementById("due").textContent = data.dueDate;
+      document.getElementById("status").textContent = data.status;
+      document.getElementById("status").className = "status " + (data.status === "PAID" ? "paid" : "unpaid");
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").scrollIntoView({behavior: "smooth"});
+    } else {
+      alert("Bill not found – check number");
+    }
+  }
+  function shareBill() {
+    const text = `*Gas Bill*%0AName: ${document.getElementById("name").textContent}%0AAmount: ${document.getElementById("amount").textContent}%0AStatus: ${document.getElementById("status").textContent}%0ACheck yours: ${location.href}`;
+    window.open("https://wa.me/?text=" + text);
+  }
+</script>
+</body>
+</html>
