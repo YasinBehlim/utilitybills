@@ -1,121 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fetch Electricity Bill - Pakistan 2025</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  <style>
-    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);color:#333;margin:0;padding:20px;min-height:100vh}
-    .container{max-width:700px;margin:40px auto;background:#fff;border-radius:20px;box-shadow:0 15px 40px rgba(0,0,0,0.3);overflow:hidden}
-    .header{background:#e74c3c;color:#fff;padding:30px;text-align:center}
-    h1{margin:0;font-size:2.5rem}
-    .card{padding:40px;text-align:center}
-    select,input{width:100%;padding:18px;margin:15px 0;border:2px solid #ddd;border-radius:12px;font-size:1.2rem}
-    button{background:#27ae60;color:#fff;padding:18px;border:none;border-radius:12px;cursor:pointer;font-size:1.4rem;width:100%;margin-top:20px}
-    button:hover{background:#1e8449}
-    .bill-container{display:none;background:#fff;padding:40px;border:2px solid #ddd;border-radius:15px;margin:30px 0;box-shadow:0 8px 25px rgba(0,0,0,0.15)}
-    .bill-header{background:#e74c3c;color:#fff;padding:20px;border-radius:10px 10px 0 0;text-align:center}
-    .bill-body{padding:25px;font-size:1.1rem;line-height:1.8}
-    table{width:100%;border-collapse:collapse;margin:20px 0}
-    td{padding:12px;border-bottom:1px solid #eee}
-    .status{padding:8px 20px;border-radius:50px;font-weight:bold;color:#fff;margin:15px 0;display:inline-block}
-    .paid{background:#27ae60}
-    .unpaid{background:#e74c3c}
-    footer{padding:20px;background:#2c3e50;color:#fff;text-align:center}
-  </style>
-</head>
-<body>
-<div class="container">
-  <div class="header">
-    <h1>Fetch Electricity Bill</h1>
-    <p>All DISCOs + K-Electric • Enter your Consumer/Reference Number</p>
-  </div>
-  <div class="card">
-    <select id="company" required>
-      <option value="">Select Company</option>
-      <option value="lesco">LESCO</option>
-      <option value="iesco">IESCO</option>
-      <option value="fesco">FESCO</option>
-      <option value="mepco">MEPCO</option>
-      <option value="gepco">GEPCO</option>
-      <option value="pesco">PESCO</option>
-      <option value="hesco">HESCO</option>
-      <option value="qesco">QESCO</option>
-      <option value="sepco">SEPCO</option>
-      <option value="tesco">TESCO</option>
-      <option value="ke">K-Electric</option>
-    </select>
-    <input type="text" id="ref" placeholder="Enter Consumer/Reference Number (10-14 digits)" maxlength="14">
-    <select id="month">
-      <option value="">Select Bill Month</option>
-      <option>January 2025</option><option>February 2025</option><option>March 2025</option>
-      <option>April 2025</option><option>May 2025</option><option>June 2025</option>
-      <option>July 2025</option><option>August 2025</option><option>September 2025</option>
-      <option>October 2025</option><option selected>November 2025</option><option>December 2025</option>
-    </select>
-    <button onclick="fetchBill()">Fetch Bill</button>
-  </div>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fetch Electricity Bill - Live</title>
+<style>
+  body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#e74c3c,#c0392b);margin:0;padding:20px;min-height:100vh;color:#fff}
+  .container{max-width:700px;margin:40px auto;background:#fff;color:#333;border-radius:20px;padding:40px;box-shadow:0 20px 50px rgba(0,0,0,0.4);text-align:center}
+  h1{font-size:2.8rem;color:#e74c3c;margin:0}
+  select,input,button{width:100%;padding:18px;margin:15px 0;border-radius:12px;font-size:1.2rem;border:none}
+  button{background:#27ae60;color:#fff;cursor:pointer;font-weight:bold}
+  button:hover{background:#1e8449}
+  .result{margin-top:30px;padding:30px;background:#f8f9fa;border-radius:16px;display:none}
+  .status{padding:10px 30px;border-radius:50px;color:#fff;font-weight:bold;display:inline-block;margin:10px}
+  .paid{background:#27ae60}.unpaid{background:#e74c3c}
+</style></head><body>
 
-  <div id="billContainer" class="bill-container">
-    <div id="bill" class="bill-body">
-      <div class="bill-header">
-        <h2>ELECTRICITY BILL</h2>
-        <p>Reference No: <strong id="refNo"></strong> | Month: <span id="billMonth">November 2025</span></p>
-      </div>
-      <table>
-        <tr><td>Consumer Name</td><td><strong>Muhammad Ahmed Khan</strong></td></tr>
-        <tr><td>Address</td><td>House #123, Street 45, Gulberg III, Lahore</td></tr>
-        <tr><td>Bill Issue Date</td><td>28 Nov 2025</td></tr>
-        <tr><td>Due Date</td><td>15 Dec 2025</td></tr>
-        <tr><td>Units Consumed</td><td>485 kWh</td></tr>
-        <tr><td>Bill Amount</td><td><strong style="font-size:1.4rem;color:#e74c3c">Rs. 18,750</strong></td></tr>
-        <tr><td>Status</td><td><span class="status" id="status">UNPAID</span></td></tr>
-      </table>
-      <button onclick="downloadPDF()">Download PDF</button>
-      <button onclick="window.print()" style="background:#3498db;margin-left:10px">Print Bill</button>
-      <button onclick="shareBill()" style="background:#25d366;margin-left:10px">Share on WhatsApp</button>
-    </div>
+<div class="container">
+  <h1>Electricity Bill</h1>
+  <p>All DISCOs + K-Electric • Live Data</p>
+
+  <select id="type">
+    <option value="lesco">LESCO</option>
+    <option value="iesco">IESCO</option>
+    <option value="fesco">FESCO</option>
+    <option value="mepco">MEPCO</option>
+    <option value="gepco">GEPCO</option>
+    <option value="pesco">PESCO</option>
+    <option value="hesco">HESCO</option>
+    <option value="sepco">SEPCO</option>
+    <option value="qesco">QESCO</option>
+    <option value="ke">K-Electric</option>
+  </select>
+
+  <input type="text" id="ref" placeholder="Enter Reference / Consumer Number" maxlength="20">
+
+  <button onclick="fetchLiveBill()">Fetch Live Bill</button>
+
+  <div class="result" id="result">
+    <h2>Bill Found!</h2>
+    <p><strong>Name:</strong> <span id="name">—</span></p>
+    <p><strong>Amount:</strong> <big id="amount">—</big></p>
+    <p><strong>Due Date:</strong> <span id="due">—</span></p>
+    <p><strong>Status:</strong> <span id="status" class="status unpaid">UNPAID</span></p>
+    <button onclick="window.print()" style="background:#3498db">Print / Save PDF</button>
+    <button onclick="shareBill()" style="background:#25d366">Share on WhatsApp</button>
   </div>
 </div>
-<footer>Pakistan Utility Portal © 2025</footer>
 
 <script>
-function fetchBill() {
-  const ref = document.getElementById("ref").value.trim();
-  const month = document.getElementById("month").value;
-  if (!ref || ref.length < 10 || ref.length > 14 || isNaN(ref)) return alert("Enter valid Consumer/Reference Number (10-14 digits)");
-  if (!month) return alert("Select bill month");
+async function fetchLiveBill() {
+  const type = document.getElementById("type").value;
+  const number = document.getElementById("ref").value.trim();
+  if (!number) return alert("Enter reference number");
 
-  document.getElementById("refNo").textContent = ref;
-  document.getElementById("billMonth").textContent = month;
-  document.getElementById("billContainer").style.display = "block";
-  document.getElementById("billContainer").scrollIntoView({behavior:"smooth"});
-
-  // Random paid/unpaid demo
-  const isPaid = Math.random() > 0.5;
-  const status = document.getElementById("status");
-  status.textContent = isPaid ? "PAID" : "UNPAID";
-  status.className = "status " + (isPaid ? "paid" : "unpaid");
-}
-
-function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  html2canvas(document.getElementById("bill")).then(canvas => {
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const width = pdf.internal.pageSize.getWidth();
-    const height = (canvas.height * width) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, width, height);
-    pdf.save("Electricity_Bill.pdf");
+  const response = await fetch("http://localhost:3000/api/bill", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({type, number})
   });
-}
+  const data = await response.json();
 
+  if (data.success) {
+    document.getElementById("name").textContent = data.name;
+    document.getElementById("amount").textContent = data.amount;
+    document.getElementById("due").textContent = data.dueDate;
+    document.getElementById("status").textContent = data.status;
+    document.getElementById("status").className = "status " + (data.status==="PAID" ? "paid" : "unpaid");
+    document.getElementById("result").style.display = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth"});
+  } else {
+    alert("Bill not found – check number or try later");
+  }
+}
 function shareBill() {
-  const text = `My Electricity Bill%0AReference: ${document.getElementById("refNo").textContent}%0AAmount: Rs. 18,750%0AStatus: ${document.getElementById("status").textContent}%0AView yours: ${location.href}`;
-  window.open(`https://wa.me/?text=${text}`);
+  const text = `*Electricity Bill*%0A${document.getElementById("type").options[document.getElementById("type").selectedIndex].text}%0AName: ${document.getElementById("name").textContent}%0AAmount: ${document.getElementById("amount").textContent}%0AStatus: ${document.getElementById("status").textContent}%0ACheck yours → https://yasinbehlim.github.io/utilitybills/`;
+  window.open("https://wa.me/?text="+text);
 }
 </script>
-</body>
-</html>
+</body></html>
