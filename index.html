@@ -1,50 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pakistan Utility Helper 2025</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pakistan Utility Portal 2025</title>
   <style>
-    body{font-family:'Segoe UI',sans-serif;margin:0;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;color:#333}
-    .container{max-width:1100px;margin:0 auto;padding:20px}
-    header{background:rgba(255,255,255,0.95);border-radius:20px;padding:30px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);margin-bottom:30px}
-    h1{color:#667eea;font-size:2.8rem;margin:0}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px}
-    .card{background:#fff;border-radius:20px;padding:30px;text-align:center;box-shadow:0 15px 35px rgba(0,0,0,0.2);transition:0.3s;min-height:220px;display:flex;flex-direction:column;justify-content:center}
-    .card:hover{transform:translateY(-10px);box-shadow:0 25px 50px rgba(0,0,0,0.3)}
-    .card h3{font-size:1.6rem;margin:15px 0;color:#333}
-    .card a{text-decoration:none;color:#667eea;font-weight:bold;font-size:1.3rem}
-    .footer{padding:30px;text-align:center;color:#fff;font-size:1.1rem}
-    .urdu{font-family:'Noto Nastaliq Urdu',serif}
-    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin:0;padding:20px;min-height:100vh;color:#333}
+    .container{max-width:1200px;margin:0 auto}
+    header{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:40px;text-align:center;margin-bottom:40px;box-shadow:0 8px 32px rgba(0,0,0,0.1)}
+    h1{font-size:3.2rem;margin:0;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+    .tagline{font-size:1.3rem;color:rgba(255,255,255,0.9);margin-top:10px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;margin:40px 0}
+    .card{background:#fff;border-radius:20px;padding:30px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.2);transition:0.3s transform,0.3s box-shadow}
+    .card:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+    .card h3{font-size:1.6rem;margin:15px 0;color:#2c3e50}
+    .card p{color:#666;line-height:1.5;margin-bottom:20px}
+    .btn{display:inline-block;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:15px 30px;border-radius:50px;text-decoration:none;font-weight:bold;font-size:1.1rem;transition:0.3s}
+    .btn:hover{background:linear-gradient(135deg,#5a67d8,#6b46c1);transform:scale(1.05)}
+    footer{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:30px;text-align:center;color:rgba(255,255,255,0.9);margin-top:40px}
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1 id="title">Pakistan Utility Helper 2025</h1>
-    <p id="tagline">بجلی · گیس · سولر · لوڈشیڈنگ · بل کیلکولیٹر – سب کچھ ایک جگہ</p>
-  </header>
+  <div class="container">
+    <header>
+      <h1>Pakistan Utility Portal 2025</h1>
+      <p class="tagline">Your Daily Helper for Electricity, Gas, Water, Solar & More – 100% Free & Honest</p>
+    </header>
 
-  <div class="grid">
-    <div class="card"><h3>Live Load-shedding Schedule</h3><a href="loadshedding.html">42+ Cities →</a></div>
-    <div class="card"><h3>Electricity Bill Calculator 2025</h3><a href="electric-calculator.html">NEPRA Slabs + Taxes →</a></div>
-    <div class="card"><h3>Solar Savings Calculator</h3><a href="solar-calculator.html">Enter Units & See Saving →</a></div>
-    <div class="card"><h3>Gas Bill Estimator (Winter 2025)</h3><a href="gas-calculator.html">SNGPL & SSGC Rates →</a></div>
-    <div class="card"><h3>Bill Splitter</h3><a href="bill-splitter.html">Hostel / Family / Office →</a></div>
-    <div class="card"><h3>Net Metering Profit</h3><a href="net-metering.html">Sell Power & Earn Money →</a></div>
+    <div class="cards">
+      <div class="card">
+        <h3>Live Load-shedding Schedule</h3>
+        <p>Check status for 50+ cities & 500+ areas – updated daily</p>
+        <a href="load-shedding.html" class="btn">Check Now</a>
+      </div>
+
+      <div class="card">
+        <h3>Electricity Bill Calculator</h3>
+        <p>2025 NEPRA rates + taxes + fuel adjustment – exact breakdown</p>
+        <a href="electric-calculator.html" class="btn">Calculate</a>
+      </div>
+
+      <div class="card">
+        <h3>Solar Savings Calculator</h3>
+        <p>Enter units → see monthly saving + payback time for your city</p>
+        <a href="solar-calculator.html" class="btn">See Savings</a>
+      </div>
+
+      <div class="card">
+        <h3>Gas Bill Estimator</h3>
+        <p>Winter 2025 SNGPL/SSGC rates – plan your budget</p>
+        <a href="gas-calculator.html" class="btn">Estimate</a>
+      </div>
+
+      <div class="card">
+        <h3>Bill Splitter</h3>
+        <p>Split bills fairly with family, hostel mates, or office colleagues</p>
+        <a href="bill-splitter.html" class="btn">Split Now</a>
+      </div>
+    </div>
+
+    <footer>
+      Made with ❤️ for Pakistan • 100% Free • No Ads • Honest Tools Only<br>
+      <a href="net-metering.html" style="color:rgba(255,255,255,0.8)">Net Metering Profit →</a>
+    </footer>
   </div>
-
-  <div class="footer">
-    Made with ❤️ for Pakistan • 100% Free • No Ads • No Fake Promises<br>
-    <button onclick="document.body.classList.toggle('urdu');this.textContent=document.body.classList.contains('urdu')?'English':'اردو'" style="margin-top:10px;padding:10px 20px;font-size:1rem">اردو</button>
-  </div>
-</div>
-
-<script>
-  document.body.classList.contains('urdu') ? document.getElementById('title').textContent = 'پاکستان یوٹیلٹی ہیلپر ۲۰۲۵' : 'Pakistan Utility Helper 2025';
-  document.body.classList.contains('urdu') ? document.getElementById('tagline').textContent = 'بجلی · گیس · سولر · لوڈشیڈنگ · بل کیلکولیٹر – سب کچھ ایک جگہ' : 'Electricity · Gas · Solar · Load-shedding · Bill Calculator – All in one place';
-</script>
 </body>
 </html>
