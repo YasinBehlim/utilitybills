@@ -54,4 +54,30 @@ function calculateGas() {
     if (mcf <= 0.5) rate = 0;
     else if (mcf <= 1) rate = 240;
     else if (mcf <= 3) rate = 720 + (mcf - 1) * 600;
-    else
+    else rate = 1920 + (mcf - 3) * 1600;
+  } else { // SSGC similar winter rates
+    rate = mcf * 850; // approx winter slab
+  }
+
+  const gst = rate * 0.18;
+  const total = Math.round(rate + gst);
+
+  document.getElementById("used").textContent = mcf + " MCF";
+  document.getElementById("base").textContent = rate.toLocaleString();
+  document.getElementById("gst").textContent = gst.toLocaleString();
+  document.getElementById("total").textContent = total.toLocaleString();
+  document.getElementById("result").style.display = "block";
+}
+
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  html2canvas(document.getElementById("result")).then(canvas => {
+    const img = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    pdf.addImage(img, "PNG", 10, 10, 190, 0);
+    pdf.save("Gas_Bill_Winter_2025.pdf");
+  });
+}
+</script>
+</body>
+</html>
